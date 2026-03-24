@@ -1,13 +1,11 @@
 // supabase.js - Use CDN instead of npm package
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-// Get environment variables from Vite (these will be replaced at build time)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Get environment variables from Vite, with fallback for Vercel
+const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://qqkajtpgkyvjxxrepxbr.supabase.co'
+const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa2FqdHBna3l2anh4cmVweGJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzU3MzgsImV4cCI6MjA4NzgxMTczOH0.IuHL40C5Rx95MsUHYWXU_pPZLCxcMsX4m_PjH4jeLMU'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('❌ Missing Supabase environment variables!')
-}
+console.log('Supabase URL configured:', !!supabaseUrl)
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

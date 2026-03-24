@@ -4,15 +4,17 @@
   "description": "Theatre Management System",
   "main": "index.html",
   "scripts": {
-    "start": "live-server --port=3000",
-    "build": "echo 'No build step required'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "live-server --port=3000"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0"
   },
   "devDependencies": {
     "live-server": "^1.2.2",
-    "vite": "^8.0.2"
+    "vite": "^5.4.0"
   },
   "repository": {
     "type": "git",
