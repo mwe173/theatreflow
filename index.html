@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theatre Manager - Dashboard</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="script.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Additional sidebar fixes */
+    .sidebar-glass {
+      overflow: hidden; /* Change from overflow-y-auto to hidden */
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .sidebar-nav-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #1e293b;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    
+    /* Ensure content doesn't overflow */
+    .sidebar-item {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Responsive fixes */
+    @media (max-width: 1024px) {
+      .sidebar-glass {
+        position: fixed;
+        left: -18rem;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+      }
+      
+      .sidebar-glass.mobile-open {
+        left: 0;
+      }
+      
+      #mobileMenuBtn {
+        display: inline-flex !important;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      #mobileMenuBtn {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="h-full font-body overflow-hidden">
+  
+  <!-- MAIN CONTAINER -->
+  <div class="flex h-full w-full main-gradient">
+    
+  <!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar-glass flex-shrink-0 transition-all duration-300">
+    <div class="p-4 flex flex-col h-full">
+        
+        <!-- Theatre Logo & Toggle Button -->
+        <div class="flex items-center justify-between mb-6 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 4L4 8v8l8 4 8-4V8l-8-4z" stroke-width="1.5"/>
+                        <circle cx="12" cy="12" r="2" fill="white"/>
+                    </svg>
+                </div>
+                <div id="sidebar-title" class="sidebar-text-group">
+                    <h1 id="theatre-name" class="font-display text-lg font-bold text-amber-100 leading-tight">TheatreFlow</h1>
+                    <p class="text-xs text-amber-200/50">Theatre Manager</p>
+                </div>
+            </div>
+            
+            <!-- Collapse/Expand Button -->
+            <button id="toggleSidebar" class="w-7 h-7 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 flex items-center justify-center text-amber-200 transition-colors flex-shrink-0">
+                <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+            </button>
+        </div>
+        
+        <!-- Navigation - Scrollable container -->
+        <div class="sidebar-nav-container">
+            <div class="space-y-4 pr-2">
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">MAIN MENU</h3>
+                    <nav class="space-y-0.5">
+                        <a href="index.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-home w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Home</span>
+                        </a>
+                        
+                        <a href="people.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-users w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">People</span>
+                        </a>
+                        
+                        <a href="calendar.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-calendar-alt w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Calendar</span>
+                        </a>
+                        
+                        <a href="attendance.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clipboard-check w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Attendance</span>
+                        </a>
+                        
+                        <a href="scenes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clapperboard w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Scenes</span>
+                        </a>
+                        
+                        <a href="props-costumes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-mask w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Props & Costumes</span>
+                        </a>
+                        
+                        <a href="files.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-folder w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Files</span>
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Production Section -->
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">PRODUCTION</h3>
+                    <nav class="space-y-0.5">
+                        <a href="settings.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/60 hover:text-amber-100 text-sm group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-cog w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group text-sm truncate">Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Profile with Dropdown Menu -->
+        <div class="mt-auto pt-4 flex-shrink-0 relative" id="userMenuContainer">
+            <div class="user-profile flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-amber-600/20 transition-colors" id="userMenuButton">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white font-semibold text-sm" id="userInitials">AD</span>
+                </div>
+                <div class="sidebar-text-group flex-1 min-w-0">
+                    <p class="text-xs font-medium text-amber-100 truncate" id="userName">Loading...</p>
+                    <p class="text-xs text-amber-200/50 truncate" id="userEmail">Loading...</p>
+                </div>
+                <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
+            </div>
+            
+            <!-- Dropdown Menu (hidden by default) -->
+            <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+                <div class="py-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
+                        <i class="fas fa-user-cog w-4 text-amber-400"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
+                        <i class="fas fa-id-card w-4 text-amber-400"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <div class="border-t border-gray-700 my-1"></div>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt w-4"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+
+    
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="flex-1 h-full overflow-y-auto">
+      <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Welcome Header -->
+        <header class="mb-8">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="font-display text-3xl font-bold text-amber-100">Welcome back,</h2>
+              <p id="welcome-message" class="text-amber-200/70 text-lg">Ready for tonight's show?</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="px-4 py-2 rounded-full text-sm bg-amber-600/20 text-amber-200 border border-amber-600/30">
+                <i class="fas fa-calendar-alt mr-2"></i>Preview Week
+              </span>
+              <button class="w-10 h-10 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+                <i class="fas fa-bell"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" class="mb-4 px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors items-center gap-2 hidden">
+          <i class="fas fa-bars mr-2"></i>Menu
+        </button>
+
+        <!-- Main Two-Column Layout -->
+        <div class="flex flex-col lg:flex-row gap-6">
+          
+          <!-- LEFT COLUMN - Quick Actions and Stats -->
+          <div class="lg:w-1/2 space-y-6">
+            
+            <!-- Quick Actions -->
+            <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+              <h3 class="font-display text-xl font-semibold text-amber-100 mb-4 flex items-center gap-2">
+                <i class="fas fa-bolt text-amber-400"></i>
+                Quick Actions
+              </h3>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Attendance -->
+                <a href="attendance.html" class="quick-action-card attendance group" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);">
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                      <i class="fas fa-clipboard-check text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-display font-semibold text-white text-sm">Attendance</h4>
+                    <p class="text-xs text-white/70">Track rehearsals</p>
+                  </div>
+                </a>
+                
+                <!-- Props -->
+                <a href="props-costumes.html" class="quick-action-card props group" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                      <i class="fas fa-mask text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-display font-semibold text-white text-sm">Props</h4>
+                    <p class="text-xs text-white/70">Costumes & props</p>
+                  </div>
+                </a>
+                
+                <!-- People -->
+                <a href="people.html" class="quick-action-card people group" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                      <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-display font-semibold text-white text-sm">People</h4>
+                    <p class="text-xs text-white/70">Cast & crew</p>
+                  </div>
+                </a>
+                
+                <!-- Scenes -->
+                <a href="scenes.html" class="quick-action-card scenes group" style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);">
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                      <i class="fas fa-clapperboard text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-display font-semibold text-white text-sm">Scenes</h4>
+                    <p class="text-xs text-white/70">Script breakdown</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="stat-card rounded-xl p-4">
+                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                  <i class="fas fa-user"></i>
+                  <span>CAST</span>
+                </div>
+                <p class="font-display text-3xl font-bold text-amber-100">24</p>
+                <p class="text-xs text-amber-200/40 mt-1 flex items-center">
+                  <i class="fas fa-arrow-up text-emerald-400 mr-1"></i>+2 this week
+                </p>
+              </div>
+              
+              <div class="stat-card rounded-xl p-4">
+                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                  <i class="fas fa-cog"></i>
+                  <span>CREW</span>
+                </div>
+                <p class="font-display text-3xl font-bold text-amber-100">12</p>
+                <p class="text-xs text-amber-200/40 mt-1">Full team</p>
+              </div>
+              
+              <div class="stat-card rounded-xl p-4">
+                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                  <i class="fas fa-clock"></i>
+                  <span>REHEARSALS</span>
+                </div>
+                <p class="font-display text-3xl font-bold text-amber-100">8</p>
+                <p class="text-xs text-amber-200/40 mt-1">This month</p>
+              </div>
+              
+              <div class="stat-card rounded-xl p-4">
+                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                  <i class="fas fa-calendar-check"></i>
+                  <span>DAYS TO OPENING</span>
+                </div>
+                <p class="font-display text-3xl font-bold text-amber-100">5</p>
+                <p class="text-xs text-amber-200/40 mt-1">Jan 14, 2025</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN - Compact Calendar -->
+<div class="lg:w-1/2">
+    <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20 sticky top-6">
+        
+        <!-- Calendar Header -->
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-amber-400"></i>
+                Calendar
+            </h2>
+            <div class="flex items-center gap-1">
+                <button id="prev-month" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+                <span id="current-month" class="text-amber-100 font-medium min-w-[100px] text-center text-sm"></span>
+                <button id="next-month" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+                    <i class="fas fa-chevron-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-3 mb-4 pb-3 border-b border-amber-600/20">
+            <div class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #7c3aed;"></span>
+                <span class="text-xs text-amber-200/70">Rehearsal</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #059669;"></span>
+                <span class="text-xs text-amber-200/70">Meeting</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #dc2626;"></span>
+                <span class="text-xs text-amber-200/70">Performance</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full" style="background: #0891b2;"></span>
+                <span class="text-xs text-amber-200/70">Tech</span>
+            </div>
+        </div>
+
+        <!-- Weekday Headers -->
+        <div class="grid grid-cols-7 gap-1 mb-1">
+            <div class="text-center text-xs font-medium text-amber-200/50">S</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">M</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">T</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">W</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">T</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">F</div>
+            <div class="text-center text-xs font-medium text-amber-200/50">S</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-1 mb-4">
+            <!-- Calendar days will be added by JavaScript -->
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-amber-600/20">
+            <div class="text-center">
+                <div class="text-xs text-amber-200/50">This Month</div>
+                <div class="text-lg font-bold text-amber-400" id="monthEventCount">0</div>
+            </div>
+            <div class="text-center">
+                <div class="text-xs text-amber-200/50">Upcoming</div>
+                <div class="text-lg font-bold text-amber-400" id="upcomingEventCount">0</div>
+            </div>
+        </div>
+
+        <!-- UPCOMING TODAY - Under Calendar -->
+        <div class="mt-4 pt-4 border-t border-amber-600/20">
+            <h3 class="font-display text-md font-semibold text-amber-100 mb-3 flex items-center gap-2">
+                <i class="fas fa-clock text-amber-400"></i>
+                Upcoming Today
+            </h3>
+            <div id="upcoming-events-preview" class="space-y-2">
+                <div class="text-center py-4 text-amber-200/50">
+                    <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
+                    <p>No events today</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day View (Hidden by default) -->
+        <div id="day-view" class="mt-4 pt-3 border-t border-amber-600/20 hidden">
+            <h3 id="day-view-title" class="font-display font-semibold text-amber-100 mb-2 text-sm"></h3>
+            <div id="day-events" class="space-y-1"></div>
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-amber-200/40 text-sm">
+          <p>🎭 Break a leg! — TheatreFlow</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+    <div class="bg-gradient-to-br from-amber-900/90 to-amber-950/90 rounded-2xl w-full max-w-md border border-amber-600/30 shadow-2xl">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 id="eventModalTitle" class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+            <i class="fas fa-calendar-plus text-amber-400"></i>
+            Add New Event
+          </h3>
+          <button id="closeEventModal" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <form id="eventForm" class="space-y-4">
+          <input type="hidden" id="eventId">
+          <input type="hidden" id="eventDate">
+          
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Event Title *</label>
+            <input type="text" id="eventTitle" required class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+          </div>
+          
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Event Type *</label>
+            <select id="eventType" required class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+              <option value="rehearsal">Rehearsal</option>
+              <option value="meeting">Meeting</option>
+              <option value="performance">Performance</option>
+              <option value="tech">Tech</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Time *</label>
+            <input type="text" id="eventTime" required class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100" placeholder="6:00 PM - 9:00 PM">
+          </div>
+          
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Location</label>
+            <input type="text" id="eventLocation" class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100" placeholder="Main Stage">
+          </div>
+          
+          <div class="flex gap-3 pt-4">
+            <button type="submit" id="submitEventBtn" class="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg">Add Event</button>
+            <button type="button" id="cancelEventModal" class="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single auth check - this is all you need -->
+  <script type="module">
+    import { auth } from './supabase.js'
+    
+    async function checkAuth() {
+      try {
+        const session = await auth.getSession()
+        console.log('Auth check:', session ? 'Logged in' : 'Not logged in')
+        
+        if (!session) {
+          window.location.href = 'login.html'
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        window.location.href = 'login.html'
+      }
+    }
+    
+    // Run the check when page loads
+    checkAuth()
+  </script>
+
+  <!-- User Menu Script -->
+<script type="module">
+  import { auth, supabase } from './supabase.js'
+  
+  // DOM Elements
+  const userMenuButton = document.getElementById('userMenuButton')
+  const userDropdown = document.getElementById('userDropdown')
+  const userChevron = document.getElementById('userMenuChevron')
+  const userName = document.getElementById('userName')
+  const userEmail = document.getElementById('userEmail')
+  const userInitials = document.getElementById('userInitials')
+  const logoutBtn = document.getElementById('logoutBtn')
+  
+  // Load user info
+  async function loadUserInfo() {
+    try {
+      const user = await auth.getUser()
+      if (user) {
+        // Get user metadata
+        const fullName = user.user_metadata?.full_name || 'User'
+        const email = user.email || 'user@example.com'
+        const role = user.user_metadata?.role || 'cast'
+        
+        // Format role for display
+        const roleDisplay = role.split('_').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ')
+        
+        // Update UI
+        userName.textContent = fullName
+        userEmail.textContent = email
+        
+        // Set initials
+        const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+        userInitials.textContent = initials
+        
+        // Update user profile in sidebar (if the old format exists)
+        const profileNameEl = document.querySelector('.user-profile .text-xs.font-medium')
+        const profileEmailEl = document.querySelector('.user-profile .text-xs.text-amber-200\\/50')
+        if (profileNameEl) profileNameEl.textContent = fullName
+        if (profileEmailEl) profileEmailEl.textContent = email
+      }
+    } catch (error) {
+      console.error('Error loading user info:', error)
+    }
+  }
+  
+  // Toggle dropdown menu
+  function toggleDropdown(e) {
+    e.stopPropagation()
+    userDropdown.classList.toggle('hidden')
+    userChevron.classList.toggle('rotate-180')
+  }
+  
+  // Hide dropdown when clicking outside
+  function handleClickOutside(e) {
+    if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+      userDropdown.classList.add('hidden')
+      userChevron.classList.remove('rotate-180')
+    }
+  }
+  
+  // Logout function
+  async function handleLogout(e) {
+    e.preventDefault()
+    try {
+      await auth.signOut()
+      window.location.href = 'login.html'
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+  
+  // Account settings (placeholder - you can implement later)
+  function handleAccountSettings(e) {
+    e.preventDefault()
+    alert('Account settings page coming soon!')
+    userDropdown.classList.add('hidden')
+    userChevron.classList.remove('rotate-180')
+  }
+  
+  // Profile (placeholder)
+  function handleProfile(e) {
+    e.preventDefault()
+    alert('Profile page coming soon!')
+    userDropdown.classList.add('hidden')
+    userChevron.classList.remove('rotate-180')
+  }
+  
+  // Event listeners
+  if (userMenuButton) {
+    userMenuButton.addEventListener('click', toggleDropdown)
+  }
+  
+  document.addEventListener('click', handleClickOutside)
+  
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout)
+  }
+  
+  const accountSettingsBtn = document.getElementById('accountSettingsBtn')
+  if (accountSettingsBtn) {
+    accountSettingsBtn.addEventListener('click', handleAccountSettings)
+  }
+  
+  const profileBtn = document.getElementById('profileBtn')
+  if (profileBtn) {
+    profileBtn.addEventListener('click', handleProfile)
+  }
+  
+  // Load user info when page loads
+  loadUserInfo()
+</script>
+
+<!-- Calendar initialization with Supabase -->
+<script type="module">
+    import { supabase } from './supabase.js'
+    
+    console.log('Calendar script starting...')
+    
+    let currentDate = new Date()
+    let selectedDate = formatDateKey(new Date()) // Track selected date
+    let events = []
+    
+    // Event colors mapping
+    const eventColors = {
+        'rehearsal': '#7c3aed',
+        'meeting': '#059669',
+        'performance': '#dc2626',
+        'tech': '#0891b2',
+        'workshop': '#d97706',
+        'audition': '#9333ea'
+    }
+    
+    // Format date key (YYYY-MM-DD)
+    function formatDateKey(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    }
+    
+    // Check if date is today
+    function isToday(dateKey) {
+        const today = new Date()
+        const todayKey = formatDateKey(today)
+        return dateKey === todayKey
+    }
+    
+    // Get days in month
+    function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate()
+    }
+    
+    // Get first day of month
+    function getFirstDayOfMonth(year, month) {
+        return new Date(year, month, 1).getDay()
+    }
+    
+    // Load events from Supabase
+    async function loadEvents() {
+        console.log('Loading events from Supabase...')
+        try {
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+            
+            if (error) {
+                console.error('Supabase error loading events:', error)
+                return []
+            }
+            
+            console.log('Success! Loaded events:', data)
+            return data || []
+        } catch (err) {
+            console.error('Exception loading events:', err)
+            return []
+        }
+    }
+    
+    // Render calendar
+    async function renderCalendar() {
+        console.log('Rendering calendar...')
+        const year = currentDate.getFullYear()
+        const month = currentDate.getMonth()
+        const daysInMonth = getDaysInMonth(year, month)
+        const firstDay = getFirstDayOfMonth(year, month)
+        
+        console.log(`Month: ${year}-${month+1}, Days: ${daysInMonth}, First day: ${firstDay}`)
+        
+        // Update month display
+        const monthDisplay = document.getElementById('current-month')
+        if (monthDisplay) {
+            monthDisplay.textContent = currentDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short'
+            })
+        }
+        
+        // Load events if not already loaded
+        if (events.length === 0) {
+            events = await loadEvents()
+        }
+        
+        const grid = document.getElementById('calendar-grid')
+        if (!grid) {
+            console.error('Calendar grid element not found!')
+            return
+        }
+        
+        grid.innerHTML = ''
+        
+        // Add empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div')
+            emptyCell.className = 'aspect-square'
+            grid.appendChild(emptyCell)
+        }
+        
+        // Add the actual days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateKey = formatDateKey(new Date(year, month, day))
+            const dayEvents = events.filter(e => e.date === dateKey)
+            const isSelected = dateKey === selectedDate
+            const isTodayFlag = isToday(dateKey)
+            
+            const dayCell = document.createElement('div')
+            
+            // Build classes based on state
+            let cellClasses = 'aspect-square flex flex-col items-center justify-center rounded-md cursor-pointer transition-all text-sm'
+            
+            if (isSelected) {
+                cellClasses += ' bg-gradient-to-br from-amber-600 to-amber-500 text-white font-semibold shadow-lg'
+            } else {
+                cellClasses += ' bg-amber-600/10 hover:bg-amber-600/20 text-amber-100'
+            }
+            
+            // Add today indicator (but don't override selected style)
+            if (isTodayFlag && !isSelected) {
+                cellClasses += ' ring-2 ring-amber-400'
+            }
+            
+            dayCell.className = cellClasses
+            dayCell.setAttribute('data-date', dateKey)
+            dayCell.onclick = () => selectDay(dateKey)
+            
+            // Day number with appropriate color
+            const dayNumber = document.createElement('span')
+            dayNumber.className = `text-sm ${isSelected ? 'text-white' : 'text-amber-100'}`
+            dayNumber.textContent = day
+            dayCell.appendChild(dayNumber)
+            
+            // Event indicators
+            if (dayEvents.length > 0) {
+                const dotsContainer = document.createElement('div')
+                dotsContainer.className = 'flex gap-0.5 mt-0.5'
+                
+                const uniqueTypes = [...new Set(dayEvents.map(e => e.type))]
+                uniqueTypes.slice(0, 3).forEach(type => {
+                    const dot = document.createElement('span')
+                    dot.className = 'w-1 h-1 rounded-full'
+                    dot.style.backgroundColor = eventColors[type] || '#94a3b8'
+                    dotsContainer.appendChild(dot)
+                })
+                
+                dayCell.appendChild(dotsContainer)
+            }
+            
+            grid.appendChild(dayCell)
+        }
+        
+        console.log('Calendar rendered, total cells:', grid.children.length)
+        updateStats()
+        updateTodayPreview()
+    }
+    
+    // Select a day
+    async function selectDay(dateKey) {
+        console.log('Day selected:', dateKey)
+        selectedDate = dateKey
+        await renderCalendar() // Re-render to update selected state
+        
+        const dayView = document.getElementById('day-view')
+        const dayTitle = document.getElementById('day-view-title')
+        const dayEventsContainer = document.getElementById('day-events')
+        
+        if (!dayView || !dayTitle || !dayEventsContainer) return
+        
+        // Format display date
+        const [year, month, day] = dateKey.split('-').map(Number)
+        const date = new Date(year, month - 1, day)
+        dayTitle.textContent = date.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        })
+        
+        const dayEvents = events.filter(e => e.date === dateKey)
+        
+        if (dayEvents.length === 0) {
+            dayEventsContainer.innerHTML = `
+                <div class="text-center py-2 text-amber-200/50 text-xs">
+                    <p>No events</p>
+                </div>
+            `
+        } else {
+            dayEventsContainer.innerHTML = dayEvents.map(event => `
+                <div class="flex items-center gap-2 p-2 bg-amber-600/10 rounded text-xs">
+                    <span class="w-2 h-2 rounded-full" style="background: ${eventColors[event.type] || '#94a3b8'};"></span>
+                    <div class="flex-1">
+                        <div class="font-medium text-amber-100">${event.title}</div>
+                        <div class="text-amber-200/50">${event.time}</div>
+                    </div>
+                </div>
+            `).join('')
+        }
+        
+        dayView.classList.remove('hidden')
+    }
+    
+    // Update stats
+    function updateStats() {
+        const today = new Date()
+        const currentMonth = today.getMonth()
+        const currentYear = today.getFullYear()
+        
+        const monthEvents = events.filter(e => {
+            if (!e.date) return false
+            const [year, month] = e.date.split('-').map(Number)
+            return month - 1 === currentMonth && year === currentYear
+        }).length
+        
+        const upcomingEvents = events.filter(e => {
+            if (!e.date) return false
+            return new Date(e.date) >= today
+        }).length
+        
+        const monthCountEl = document.getElementById('monthEventCount')
+        const upcomingCountEl = document.getElementById('upcomingEventCount')
+        
+        if (monthCountEl) monthCountEl.textContent = monthEvents
+        if (upcomingCountEl) upcomingCountEl.textContent = upcomingEvents
+    }
+    
+    // Update today's preview
+    function updateTodayPreview() {
+        const previewEl = document.getElementById('upcoming-events-preview')
+        if (!previewEl) return
+        
+        const today = new Date()
+        const todayKey = formatDateKey(today)
+        const todayEvents = events.filter(e => e.date === todayKey)
+        
+        if (todayEvents.length === 0) {
+            previewEl.innerHTML = `
+                <div class="text-center py-4 text-amber-200/50 text-sm">
+                    <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
+                    <p>No events today</p>
+                </div>
+            `
+        } else {
+            previewEl.innerHTML = todayEvents.slice(0, 3).map(event => `
+                <div class="flex items-center gap-2 p-2 bg-amber-600/10 rounded-lg">
+                    <span class="w-2 h-2 rounded-full" style="background: ${eventColors[event.type] || '#94a3b8'};"></span>
+                    <div class="flex-1">
+                        <div class="text-sm text-amber-100">${event.title}</div>
+                        <div class="text-xs text-amber-200/50">${event.time}</div>
+                    </div>
+                </div>
+            `).join('')
+            
+            if (todayEvents.length > 3) {
+                previewEl.innerHTML += `
+                    <div class="text-center text-xs text-amber-200/50 pt-1">
+                        +${todayEvents.length - 3} more
+                    </div>
+                `
+            }
+        }
+    }
+    
+    // Change month
+    function changeMonth(delta) {
+        currentDate.setMonth(currentDate.getMonth() + delta)
+        renderCalendar()
+    }
+    
+    // Initialize calendar
+    async function initCalendar() {
+        console.log('Initializing calendar...')
+        await renderCalendar()
+        
+        // Select today's date by default
+        await selectDay(formatDateKey(new Date()))
+        
+        // Set up month navigation
+        const prevBtn = document.getElementById('prev-month')
+        const nextBtn = document.getElementById('next-month')
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => changeMonth(-1))
+            console.log('Prev button listener added')
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => changeMonth(1))
+            console.log('Next button listener added')
+        }
+    }
+    
+    // Start calendar
+    initCalendar().catch(err => {
+        console.error('Calendar initialization failed:', err)
+    })
+</script>
+
+<!-- Dynamic Stats from Supabase -->
+<script type="module">
+    import { supabase } from './supabase.js'
+    
+    async function loadDashboardStats() {
+        try {
+            console.log('Loading dashboard stats...')
+            
+            // Get students count
+            const { count: studentCount, error: studentError } = await supabase
+                .from('students')
+                .select('*', { count: 'exact', head: true })
+            
+            if (studentError) {
+                console.error('Error loading students:', studentError)
+            }
+            
+            // Get students with roles
+            const { data: students, error: rolesError } = await supabase
+                .from('students')
+                .select('roles')
+            
+            if (rolesError) {
+                console.error('Error loading roles:', rolesError)
+            }
+            
+            // Calculate role counts
+            let mainCount = 0
+            let crewCount = 0
+            
+            if (students) {
+                students.forEach(student => {
+                    if (student.roles && Array.isArray(student.roles)) {
+                        if (student.roles.includes('main')) mainCount++
+                        if (student.roles.includes('crew')) crewCount++
+                    }
+                })
+            }
+            
+            // Get events count for this month
+            const today = new Date()
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+            
+            const firstDayStr = firstDay.toISOString().split('T')[0]
+            const lastDayStr = lastDay.toISOString().split('T')[0]
+            
+            const { count: eventCount, error: eventError } = await supabase
+                .from('events')
+                .select('*', { count: 'exact', head: true })
+                .gte('date', firstDayStr)
+                .lte('date', lastDayStr)
+            
+            if (eventError) {
+                console.error('Error loading events:', eventError)
+            }
+            
+            // Get days to opening (you might need to calculate this differently)
+            // For now, let's find the next performance
+            const { data: nextPerformance, error: perfError } = await supabase
+                .from('events')
+                .select('date')
+                .eq('type', 'performance')
+                .gte('date', today.toISOString().split('T')[0])
+                .order('date', { ascending: true })
+                .limit(1)
+            
+            let daysToOpening = 'TBD'
+            if (nextPerformance && nextPerformance.length > 0) {
+                const performanceDate = new Date(nextPerformance[0].date)
+                const diffTime = performanceDate - today
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+                daysToOpening = diffDays
+            }
+            
+            // Update the DOM
+            const castEl = document.querySelector('.stat-card:first-child .font-display')
+            const crewEl = document.querySelector('.stat-card:nth-child(2) .font-display')
+            const rehearsalsEl = document.querySelector('.stat-card:nth-child(3) .font-display')
+            const daysEl = document.querySelector('.stat-card:last-child .font-display')
+            
+            if (castEl) castEl.textContent = mainCount || 0
+            if (crewEl) crewEl.textContent = crewCount || 0
+            if (rehearsalsEl) rehearsalsEl.textContent = eventCount || 0
+            
+            if (daysEl) {
+                daysEl.textContent = daysToOpening
+                // Update the subtitle date if you want
+                const dateEl = document.querySelector('.stat-card:last-child .text-xs.text-amber-200\\/40')
+                if (dateEl && nextPerformance && nextPerformance[0]) {
+                    const date = new Date(nextPerformance[0].date)
+                    dateEl.textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                }
+            }
+            
+            console.log('Stats updated:', { mainCount, crewCount, eventCount, daysToOpening })
+            
+        } catch (err) {
+            console.error('Error loading dashboard stats:', err)
+        }
+    }
+    
+    // Load stats when page loads
+    loadDashboardStats()
+    
+    // Optional: Refresh stats every 30 seconds
+    // setInterval(loadDashboardStats, 30000)
+</script>
+
+
+
+</body>
+</html>

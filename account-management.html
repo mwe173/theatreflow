@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Theatre Manager</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="h-full font-body overflow-hidden">
+    <div class="flex h-full w-full main-gradient">
+        
+        <!-- ===== SIDEBAR (identical to all your pages) ===== -->
+        <aside id="sidebar" class="sidebar-glass flex-shrink-0 transition-all duration-300">
+            <div class="p-4 flex flex-col h-full">
+                
+                <!-- Theatre Logo & Toggle Button -->
+                <div class="flex items-center justify-between mb-6 flex-shrink-0">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 4L4 8v8l8 4 8-4V8l-8-4z" stroke-width="1.5"/>
+                                <circle cx="12" cy="12" r="2" fill="white"/>
+                            </svg>
+                        </div>
+                        <div id="sidebar-title" class="sidebar-text-group">
+                            <h1 id="theatre-name" class="font-display text-lg font-bold text-amber-100 leading-tight">TheatreFlow</h1>
+                            <p class="text-xs text-amber-200/50">Theatre Manager</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Collapse/Expand Button -->
+                    <button id="toggleSidebar" class="w-7 h-7 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 flex items-center justify-center text-amber-200 transition-colors flex-shrink-0">
+                        <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                </div>
+                
+                <!-- Navigation - Scrollable container -->
+                <div class="sidebar-nav-container">
+                    <div class="space-y-4 pr-2">
+                        <div>
+                            <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">MAIN MENU</h3>
+                            <nav class="space-y-0.5">
+                                <a href="index.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-home w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Home</span>
+                                </a>
+                                
+                                <a href="people.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-users w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">People</span>
+                                </a>
+                                
+                                <a href="calendar.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-calendar-alt w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Calendar</span>
+                                </a>
+                                
+                                <a href="attendance.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-clipboard-check w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Attendance</span>
+                                </a>
+                                
+                                <a href="scenes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-clapperboard w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Scenes</span>
+                                </a>
+                                
+                                <a href="props-costumes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-mask w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Props & Costumes</span>
+                                </a>
+                                
+                                <a href="files.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-folder w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group font-medium text-sm truncate">Files</span>
+                                </a>
+                            </nav>
+                        </div>
+                        
+                        <!-- Production Section -->
+                        <div>
+                            <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">PRODUCTION</h3>
+                            <nav class="space-y-0.5">
+                                <a href="settings.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/60 hover:text-amber-100 text-sm group">
+                                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                        <i class="fas fa-cog w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="sidebar-text-group text-sm truncate">Settings</span>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Profile with Dropdown Menu -->
+                <div class="mt-auto pt-4 flex-shrink-0 relative" id="userMenuContainer">
+                    <div class="user-profile flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-amber-600/20 transition-colors" id="userMenuButton">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-semibold text-sm" id="userInitials">...</span>
+                        </div>
+                        <div class="sidebar-text-group flex-1 min-w-0">
+                            <p class="text-xs font-medium text-amber-100 truncate" id="userName">Loading...</p>
+                            <p class="text-xs text-amber-200/50 truncate" id="userEmail">Loading...</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
+                    </div>
+                    
+                    <!-- Dropdown Menu (hidden by default) -->
+                    <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+                        <div class="py-1">
+                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
+                                <i class="fas fa-user-cog w-4 text-amber-400"></i>
+                                <span>Account Settings</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
+                                <i class="fas fa-id-card w-4 text-amber-400"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <div class="border-t border-gray-700 my-1"></div>
+                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt w-4"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="flex-1 h-full overflow-y-auto">
+            <div class="max-w-4xl mx-auto px-6 py-8">
+                
+                <!-- Header -->
+                <header class="mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div>
+                            <h1 class="font-display text-4xl font-bold text-amber-100">Account Settings</h1>
+                            <p class="text-amber-200/70">View and update your profile information</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-4 py-2 rounded-full text-sm bg-amber-600/20 text-amber-200 border border-amber-600/30">
+                                <i class="fas fa-lock mr-2"></i>Secure Profile
+                            </span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Mobile menu button -->
+                <button id="mobileMenuBtn" class="mb-4 px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors items-center gap-2 hidden">
+                    <i class="fas fa-bars mr-2"></i>Menu
+                </button>
+
+                <!-- Two Column Layout -->
+                <div class="flex flex-col lg:flex-row gap-6">
+                    
+                    <!-- LEFT COLUMN - Profile Info -->
+                    <div class="lg:w-2/5">
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+                            <div class="flex flex-col items-center text-center">
+                                <!-- Profile Picture -->
+                                <div class="w-28 h-28 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-4xl font-bold shadow-xl border-4 border-amber-600/30 mb-4">
+                                    <span id="profileInitials">...</span>
+                                </div>
+                                
+                                <!-- Name -->
+                                <h3 class="font-display text-2xl font-bold text-amber-100 mb-1" id="profileName">Loading...</h3>
+                                
+                                <!-- Email -->
+                                <div class="flex items-center gap-2 text-amber-200/70 mt-2">
+                                    <i class="fas fa-envelope text-amber-400 text-sm"></i>
+                                    <span id="profileEmail">Loading...</span>
+                                </div>
+                                
+                                <!-- Phone -->
+                                <div class="flex items-center gap-2 text-amber-200/70 mt-1">
+                                    <i class="fas fa-phone-alt text-amber-400 text-sm"></i>
+                                    <span id="profilePhone">Not set</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT COLUMN - Action Forms -->
+                    <div class="lg:w-3/5 space-y-6">
+                        
+                        <!-- Change Password -->
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+                            <div class="flex items-center gap-3 mb-5 pb-2 border-b border-amber-600/20">
+                                <i class="fas fa-lock text-amber-400 text-lg"></i>
+                                <h3 class="font-display text-xl font-semibold text-amber-100">Change Password</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Current Password</label>
+                                    <input type="password" id="currentPassword" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">New Password</label>
+                                    <input type="password" id="newPassword" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <button id="changePasswordBtn" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium">
+                                    Update Password
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Update Email -->
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+                            <div class="flex items-center gap-3 mb-5 pb-2 border-b border-amber-600/20">
+                                <i class="fas fa-envelope text-amber-400 text-lg"></i>
+                                <h3 class="font-display text-xl font-semibold text-amber-100">Update Email</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Current Email</label>
+                                    <div class="w-full px-4 py-2 bg-amber-950/30 border border-amber-600/20 rounded-lg text-amber-200/70" id="currentEmailDisplay">Loading...</div>
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">New Email</label>
+                                    <input type="email" id="newEmail" placeholder="new.email@example.com" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Confirm New Email</label>
+                                    <input type="email" id="confirmEmail" placeholder="confirm@example.com" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <button id="updateEmailBtn" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium">
+                                    Change Email
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Update Phone -->
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+                            <div class="flex items-center gap-3 mb-5 pb-2 border-b border-amber-600/20">
+                                <i class="fas fa-phone-alt text-amber-400 text-lg"></i>
+                                <h3 class="font-display text-xl font-semibold text-amber-100">Update Phone Number</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Current Phone</label>
+                                    <div class="w-full px-4 py-2 bg-amber-950/30 border border-amber-600/20 rounded-lg text-amber-200/70" id="currentPhoneDisplay">Not set</div>
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">New Phone Number</label>
+                                    <input type="tel" id="newPhone" placeholder="+1 (555) 987-6543" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <div>
+                                    <label class="block text-amber-200/70 text-sm mb-1">Confirm Phone Number</label>
+                                    <input type="tel" id="confirmPhone" placeholder="Confirm phone number" 
+                                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                                </div>
+                                <button id="updatePhoneBtn" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors font-medium">
+                                    Update Phone
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-8 text-center text-amber-200/40 text-sm">
+                    <p>🎭 Break a leg! — TheatreFlow</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { auth, supabase } from './supabase.js'
+
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const session = await auth.getSession()
+                if (!session) {
+                    window.location.href = 'login.html'
+                    return false
+                }
+                return true
+            } catch (error) {
+                console.error('Auth check failed:', error)
+                window.location.href = 'login.html'
+                return false
+            }
+        }
+
+        // Load and display user data
+        async function loadUserData() {
+            try {
+                const user = await auth.getUser()
+                if (!user) return
+                
+                const fullName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+                const email = user.email || ''
+                const phone = user.user_metadata?.phone || ''
+                const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                
+                // Update profile section
+                document.getElementById('profileName').textContent = fullName
+                document.getElementById('profileEmail').textContent = email
+                document.getElementById('profilePhone').textContent = phone || 'Not set'
+                document.getElementById('profileInitials').textContent = initials
+                
+                // Update sidebar
+                document.getElementById('userName').textContent = fullName
+                document.getElementById('userEmail').textContent = email
+                document.getElementById('userInitials').textContent = initials
+                
+                // Update current values in forms
+                document.getElementById('currentEmailDisplay').textContent = email
+                document.getElementById('currentPhoneDisplay').textContent = phone || 'Not set'
+            } catch (error) {
+                console.error('Error loading user data:', error)
+                alert('Failed to load user data')
+            }
+        }
+
+        // Change Password
+        document.getElementById('changePasswordBtn')?.addEventListener('click', async () => {
+            const currentPwd = document.getElementById('currentPassword').value
+            const newPwd = document.getElementById('newPassword').value
+            const confirmPwd = document.getElementById('confirmPassword').value
+            
+            if (!currentPwd || !newPwd) {
+                alert('Please fill in all password fields')
+                return
+            }
+            if (newPwd !== confirmPwd) {
+                alert('New passwords do not match')
+                return
+            }
+            if (newPwd.length < 6) {
+                alert('Password must be at least 6 characters')
+                return
+            }
+            
+            try {
+                const user = await auth.getUser()
+                const { error: signInError } = await auth.signIn(user.email, currentPwd)
+                if (signInError) {
+                    alert('Current password is incorrect')
+                    return
+                }
+                
+                const { error } = await supabase.auth.updateUser({ password: newPwd })
+                if (error) throw error
+                
+                alert('Password updated successfully!')
+                document.getElementById('currentPassword').value = ''
+                document.getElementById('newPassword').value = ''
+                document.getElementById('confirmPassword').value = ''
+            } catch (err) {
+                console.error('Password update error:', err)
+                alert('Error: ' + err.message)
+            }
+        })
+
+        // Update Email
+        document.getElementById('updateEmailBtn')?.addEventListener('click', async () => {
+            const newEmail = document.getElementById('newEmail').value
+            const confirmEmail = document.getElementById('confirmEmail').value
+            
+            if (!newEmail || !confirmEmail) {
+                alert('Please fill both email fields')
+                return
+            }
+            if (newEmail !== confirmEmail) {
+                alert('Emails do not match')
+                return
+            }
+            if (!newEmail.includes('@')) {
+                alert('Please enter a valid email address')
+                return
+            }
+            
+            try {
+                const { error } = await supabase.auth.updateUser({ email: newEmail })
+                if (error) throw error
+                
+                alert(`Verification email sent to ${newEmail}. Please check your inbox to confirm.`)
+                document.getElementById('newEmail').value = ''
+                document.getElementById('confirmEmail').value = ''
+                document.getElementById('profileEmail').textContent = newEmail + ' (pending)'
+                document.getElementById('currentEmailDisplay').textContent = newEmail + ' (pending)'
+            } catch (err) {
+                console.error('Email update error:', err)
+                alert('Error: ' + err.message)
+            }
+        })
+
+        // Update Phone
+        document.getElementById('updatePhoneBtn')?.addEventListener('click', async () => {
+            const newPhone = document.getElementById('newPhone').value
+            const confirmPhone = document.getElementById('confirmPhone').value
+            
+            if (!newPhone || !confirmPhone) {
+                alert('Please fill both phone fields')
+                return
+            }
+            if (newPhone !== confirmPhone) {
+                alert('Phone numbers do not match')
+                return
+            }
+            
+            try {
+                const user = await auth.getUser()
+                const { error } = await supabase.auth.updateUser({
+                    data: { ...user.user_metadata, phone: newPhone }
+                })
+                if (error) throw error
+                
+                alert('Phone number updated successfully!')
+                document.getElementById('profilePhone').textContent = newPhone
+                document.getElementById('currentPhoneDisplay').textContent = newPhone
+                document.getElementById('newPhone').value = ''
+                document.getElementById('confirmPhone').value = ''
+            } catch (err) {
+                console.error('Phone update error:', err)
+                alert('Error: ' + err.message)
+            }
+        })
+
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+            e.preventDefault()
+            try {
+                await auth.signOut()
+                window.location.href = 'login.html'
+            } catch (error) {
+                console.error('Logout failed:', error)
+                alert('Logout failed')
+            }
+        })
+
+        // Sidebar toggle (matches your existing pages)
+        const sidebar = document.getElementById('sidebar')
+        const toggleBtn = document.getElementById('toggleSidebar')
+        const toggleIcon = document.getElementById('toggleIcon')
+        
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed')
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleIcon.classList.remove('fa-chevron-left')
+                    toggleIcon.classList.add('fa-chevron-right')
+                } else {
+                    toggleIcon.classList.remove('fa-chevron-right')
+                    toggleIcon.classList.add('fa-chevron-left')
+                }
+            })
+        }
+
+        // Mobile menu
+        const mobileBtn = document.getElementById('mobileMenuBtn')
+        if (mobileBtn) {
+            mobileBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('mobile-open')
+            })
+        }
+
+        // User dropdown menu
+        const userMenuBtn = document.getElementById('userMenuButton')
+        const userDropdown = document.getElementById('userDropdown')
+        const userChevron = document.getElementById('userMenuChevron')
+        
+        if (userMenuBtn) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation()
+                userDropdown.classList.toggle('hidden')
+                if (userChevron) userChevron.classList.toggle('rotate-180')
+            })
+            
+            document.addEventListener('click', (e) => {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.add('hidden')
+                    if (userChevron) userChevron.classList.remove('rotate-180')
+                }
+            })
+        }
+
+        // Account settings and profile buttons
+        document.getElementById('accountSettingsBtn')?.addEventListener('click', (e) => {
+            e.preventDefault()
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+        
+        document.getElementById('profileBtn')?.addEventListener('click', (e) => {
+            e.preventDefault()
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+
+        // Initialize
+        checkAuth().then(authenticated => {
+            if (authenticated) {
+                loadUserData()
+            }
+        })
+    </script>
+</body>
+</html>

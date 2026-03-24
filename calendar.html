@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - Theatre Manager</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Calendar Page Specific Styles - Matching Attendance Page */
+        
+        /* Mini Calendar - Matches homepage calendar style */
+        .mini-calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        
+        .mini-calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+        
+        .mini-calendar-day:not(.empty):hover {
+            background: #1e293b;
+            border-color: #475569;
+            transform: scale(1.05);
+            color: #f1f5f9;
+        }
+        
+        .mini-calendar-day.selected {
+            background: linear-gradient(135deg, #b45309, #d97706) !important;
+            color: white !important;
+            font-weight: 600;
+            border: none;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(180, 83, 9, 0.3);
+        }
+        
+        .mini-calendar-day.today {
+            border: 2px solid #f59e0b;
+            font-weight: bold;
+        }
+        
+        .mini-calendar-day.has-event {
+            position: relative;
+            font-weight: 500;
+            color: #fbbf24;
+        }
+        
+        .mini-calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fbbf24;
+        }
+        
+        .mini-calendar-day.has-event.selected::after {
+            background: white;
+        }
+        
+        .mini-calendar-day.empty {
+            background: transparent;
+            border: 1px solid transparent;
+            pointer-events: none;
+        }
+        
+        .mini-calendar-weekday {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            padding: 0.5rem 0;
+        }
+        
+        /* Event List Items - Matching attendance student rows */
+        .event-list-item {
+            transition: all 0.2s ease;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+        }
+        
+        .event-list-item:hover {
+            transform: translateX(4px);
+            background: #2d3a4f;
+            border-color: #475569;
+        }
+        
+        .event-list-item.upcoming {
+            border-left: 4px solid #10b981;
+        }
+        
+        .event-list-item.ongoing {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .event-list-item.past {
+            border-left: 4px solid #6b7280;
+            opacity: 0.6;
+        }
+        
+        /* Date Groups - Matching attendance date picker */
+        .date-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .date-group:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 1rem;
+            right: 1rem;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #334155, transparent);
+        }
+        
+        .date-group.selected-date-group {
+            position: relative;
+            padding-left: 0.75rem;
+        }
+        
+        .date-group.selected-date-group::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, #b45309, #d97706);
+            border-radius: 3px;
+            box-shadow: 0 0 8px #b45309;
+        }
+        
+        /* Filter buttons - Matching attendance filters */
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover {
+            background: #2d3a4f;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Today button - Matching attendance today button */
+        .today-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .today-btn:hover {
+            background: #2d3a4f;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+        
+        /* Search input - Matching attendance search */
+        .search-input-wrapper {
+            position: relative;
+        }
+        
+        .search-input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f1f5f9;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #b45309;
+            box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+        }
+        
+        /* Select dropdown - Matching attendance selects */
+        select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border-radius: 0.5rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+        }
+        
+        select option {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #b45309;
+        }
+        
+        /* Legend dots - Matching homepage legend */
+        .legend-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        /* Animation for date selection */
+        @keyframes highlightPulse {
+            0% { background-color: rgba(180, 83, 9, 0); }
+            50% { background-color: rgba(180, 83, 9, 0.2); }
+            100% { background-color: rgba(180, 83, 9, 0); }
+        }
+        
+        .date-group.highlight-date-group {
+            animation: highlightPulse 2s ease;
+        }
+        
+        /* Calendar navigation buttons */
+        .calendar-nav-btn {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: #1e293b;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            border: 1px solid #334155;
+            cursor: pointer;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: #2d3a4f;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .event-list-item {
+                padding: 0.75rem;
+            }
+            
+            .filter-btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="h-full font-body overflow-hidden">
+    <div class="flex h-full w-full main-gradient">
+        
+        <!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar-glass flex-shrink-0 transition-all duration-300">
+    <div class="p-4 flex flex-col h-full">
+        
+        <!-- Theatre Logo & Toggle Button -->
+        <div class="flex items-center justify-between mb-6 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 4L4 8v8l8 4 8-4V8l-8-4z" stroke-width="1.5"/>
+                        <circle cx="12" cy="12" r="2" fill="white"/>
+                    </svg>
+                </div>
+                <div id="sidebar-title" class="sidebar-text-group">
+                    <h1 id="theatre-name" class="font-display text-lg font-bold text-amber-100 leading-tight">TheatreFlow</h1>
+                    <p class="text-xs text-amber-200/50">Theatre Manager</p>
+                </div>
+            </div>
+            
+            <!-- Collapse/Expand Button -->
+            <button id="toggleSidebar" class="w-7 h-7 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 flex items-center justify-center text-amber-200 transition-colors flex-shrink-0">
+                <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+            </button>
+        </div>
+        
+        <!-- Navigation - Scrollable container -->
+        <div class="sidebar-nav-container">
+            <div class="space-y-4 pr-2">
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">MAIN MENU</h3>
+                    <nav class="space-y-0.5">
+                        <a href="index.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-home w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Home</span>
+                        </a>
+                        
+                        <a href="people.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-users w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">People</span>
+                        </a>
+                        
+                        <a href="calendar.html" class="sidebar-item active flex items-center gap-3 px-3 py-2 rounded-lg text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-amber-600/20 flex items-center justify-center group-hover:bg-amber-600/30 flex-shrink-0">
+                                <i class="fas fa-calendar-alt w-3.5 h-3.5 text-amber-300"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Calendar</span>
+                        </a>
+                        
+                        <a href="attendance.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clipboard-check w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Attendance</span>
+                        </a>
+                        
+                        <a href="scenes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clapperboard w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Scenes</span>
+                        </a>
+                        
+                        <a href="props-costumes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-mask w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Props & Costumes</span>
+                        </a>
+                        
+                        <a href="files.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-folder w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Files</span>
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Production Section -->
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">PRODUCTION</h3>
+                    <nav class="space-y-0.5">
+                        <a href="settings.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/60 hover:text-amber-100 text-sm group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-cog w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group text-sm truncate">Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Profile with Dropdown Menu -->
+        <div class="mt-auto pt-4 flex-shrink-0 relative" id="userMenuContainer">
+            <div class="user-profile flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-amber-600/20 transition-colors" id="userMenuButton">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white font-semibold text-sm" id="userInitials">AD</span>
+                </div>
+                <div class="sidebar-text-group flex-1 min-w-0">
+                    <p class="text-xs font-medium text-amber-100 truncate" id="userName">Loading...</p>
+                    <p class="text-xs text-amber-200/50 truncate" id="userEmail">Loading...</p>
+                </div>
+                <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
+            </div>
+            
+            <!-- Dropdown Menu -->
+            <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+                <div class="py-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
+                        <i class="fas fa-user-cog w-4 text-amber-400"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
+                        <i class="fas fa-id-card w-4 text-amber-400"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <div class="border-t border-gray-700 my-1"></div>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt w-4"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+        
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="flex-1 h-full overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+                
+                <!-- Header -->
+                <header class="mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div>
+                            <h1 class="font-display text-4xl font-bold text-amber-100">Production Calendar</h1>
+                            <p class="text-amber-200/70">View and manage all upcoming events</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button id="openAddEventModal" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Add New Event
+                            </button>
+                            <button id="todayBtn" class="today-btn flex items-center gap-2">
+                                <i class="fas fa-calendar-day"></i>
+                                Today
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Filter Bar -->
+                <div class="flex flex-wrap items-center gap-3 mb-6">
+                    <div class="flex-1 min-w-[200px] search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchEvents" placeholder="Search events..." class="search-input">
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-btn active" data-filter="all">All Events</button>
+                        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                        <button class="filter-btn" data-filter="today">Today</button>
+                        <button class="filter-btn" data-filter="week">This Week</button>
+                        <button class="filter-btn" data-filter="month">This Month</button>
+                    </div>
+                    
+<select id="eventTypeFilter">
+    <option value="all">All Types</option>
+    <option value="rehearsal">Rehearsal</option>
+    <option value="tech">Tech</option>
+    <option value="performance">Performance</option>
+    <option value="workshop">Workshop</option>
+    <option value="other">Other</option>
+</select>
+                </div>
+
+                <!-- Main Calendar Layout -->
+                <div class="flex flex-col lg:flex-row gap-6 overflow-x-hidden">
+                    
+                    <!-- LEFT SIDE: Event List -->
+                    <div class="flex-1">
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+                                    <i class="fas fa-list text-amber-400"></i>
+                                    Event List
+                                </h2>
+                                <span id="eventCount" class="text-sm text-amber-200/50">0 events</span>
+                            </div>
+                            
+                            <!-- Event List Container -->
+                            <div id="eventList" class="space-y-6 max-h-[600px] overflow-y-auto overflow-x-hidden pr-2">
+                                <div class="text-center py-12 text-amber-200/50">
+                                    <i class="fas fa-calendar-alt text-4xl mb-3 opacity-50"></i>
+                                    <p>Loading events...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT SIDE: Mini Calendar -->
+                    <div class="lg:w-80">
+                        <div class="bg-amber-900/20 rounded-2xl p-6 border border-amber-600/20 sticky top-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="font-display text-lg font-semibold text-amber-100">
+                                    <i class="fas fa-calendar-alt text-amber-400 mr-2"></i>
+                                    <span id="miniMonthYear">January 2025</span>
+                                </h2>
+                                <div class="flex gap-1">
+                                    <button id="prevMonthMini" class="calendar-nav-btn">
+                                        <i class="fas fa-chevron-left text-sm"></i>
+                                    </button>
+                                    <button id="nextMonthMini" class="calendar-nav-btn">
+                                        <i class="fas fa-chevron-right text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Mini Calendar Weekdays -->
+                            <div class="mini-calendar-weekday grid grid-cols-7 mb-1">
+                                <div>S</div>
+                                <div>M</div>
+                                <div>T</div>
+                                <div>W</div>
+                                <div>T</div>
+                                <div>F</div>
+                                <div>S</div>
+                            </div>
+                            
+                            <!-- Mini Calendar Grid -->
+                            <div id="miniCalendar" class="mini-calendar-grid mb-4">
+                                <!-- Calendar days will be dynamically added here -->
+                            </div>
+                            
+                            <!-- Legend -->
+                            <!-- Updated Legend - Fewer options -->
+<div class="border-t border-amber-600/20 pt-4 mt-2">
+    <h3 class="text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-3">Event Types</h3>
+    <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: #7c3aed;"></span>
+            <span class="text-amber-200/70">Rehearsal</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: #0891b2;"></span>
+            <span class="text-amber-200/70">Tech</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: #dc2626;"></span>
+            <span class="text-amber-200/70">Performance</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: #d97706;"></span>
+            <span class="text-amber-200/70">Workshop</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: #6b7280;"></span>
+            <span class="text-amber-200/70">Other</span>
+        </div>
+    </div>
+</div>
+                            </div>
+                            
+                            <!-- Quick Stats -->
+                            <div class="border-t border-amber-600/20 pt-4 mt-4">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="text-center p-2 bg-amber-600/10 rounded-lg">
+                                        <div class="text-amber-200/50 text-xs">Total Events</div>
+                                        <div id="totalEventsCount" class="font-display text-xl font-bold text-amber-100">0</div>
+                                    </div>
+                                    <div class="text-center p-2 bg-amber-600/10 rounded-lg">
+                                        <div class="text-amber-200/50 text-xs">This Month</div>
+                                        <div id="monthEventsCount" class="font-display text-xl font-bold text-amber-100">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-8 text-center text-amber-200/40 text-sm">
+                    <p>🎭 Break a leg! — TheatreFlow</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Event Modal -->
+<div id="eventModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+    <div class="bg-gradient-to-br from-amber-900/90 to-amber-950/90 rounded-2xl w-full max-w-md border border-amber-600/30 shadow-2xl">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 id="eventModalTitle" class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+                    <i class="fas fa-calendar-plus text-amber-400"></i>
+                    Add New Event
+                </h3>
+                <button id="closeEventModal" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="eventForm" class="space-y-4">
+                <input type="hidden" id="eventId">
+                <input type="hidden" id="eventDate">
+                
+                <div>
+                    <label class="block text-amber-200/70 text-sm mb-1">Event Title *</label>
+                    <input type="text" id="eventTitle" required 
+                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100"
+                           placeholder="e.g., Act 1 Rehearsal">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-1">Event Type *</label>
+                        <select id="eventType" required class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+                            <option value="rehearsal">Rehearsal</option>
+                            <option value="tech">Tech</option>
+                            <option value="performance">Performance</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-1">Date *</label>
+                        <input type="date" id="eventDateInput" required 
+                               class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+                    </div>
+                </div>
+                
+                <!-- Updated Time Section - Start and End Time -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-1">Start Time *</label>
+                        <input type="time" id="eventStartTime" required 
+                               class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+                    </div>
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-1">End Time</label>
+                        <input type="time" id="eventEndTime" 
+                               class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+                    </div>
+                </div>
+                <p class="text-xs text-amber-200/30 -mt-2">End time is optional</p>
+                
+                <div>
+                    <label class="block text-amber-200/70 text-sm mb-1">Location</label>
+                    <input type="text" id="eventLocation" 
+                           class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100"
+                           placeholder="e.g., Main Stage">
+                </div>
+                
+                <div>
+                    <label class="block text-amber-200/70 text-sm mb-1">Description</label>
+                    <textarea id="eventDescription" rows="2" 
+                              class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100"
+                              placeholder="Additional details..."></textarea>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" id="submitEventBtn" class="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors">
+                        Add Event
+                    </button>
+                    <button type="button" id="cancelEventModal" class="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- View Event Modal -->
+    <div id="viewEventModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+        <div class="bg-gradient-to-br from-amber-900/90 to-amber-950/90 rounded-2xl w-full max-w-md border border-amber-600/30 shadow-2xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 id="viewEventTitle" class="font-display text-xl font-semibold text-amber-100"></h3>
+                    <button id="closeViewModal" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="viewEventDetails" class="space-y-4">
+                    <!-- Event details will be populated here -->
+                </div>
+                
+                <div class="flex gap-3 pt-4 mt-4 border-t border-amber-600/20">
+                    <button id="editFromViewBtn" class="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors">
+                        <i class="fas fa-edit mr-2"></i>Edit
+                    </button>
+                    <button id="deleteFromViewBtn" class="flex-1 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors">
+                        <i class="fas fa-trash mr-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script type="module" src="calendar.js"></script>
+    <script type="module" src="index.js"></script>
+    
+    <!-- Auth Check -->
+    <script type="module">
+        import { auth } from './supabase.js'
+        
+        async function checkAuth() {
+            const session = await auth.getSession()
+            if (!session) {
+                window.location.href = 'login.html'
+            }
+        }
+        checkAuth()
+    </script>
+    
+    <!-- User Menu Script -->
+    <script type="module">
+        import { auth } from './supabase.js'
+        
+        const userMenuButton = document.getElementById('userMenuButton')
+        const userDropdown = document.getElementById('userDropdown')
+        const userChevron = document.getElementById('userMenuChevron')
+        const userName = document.getElementById('userName')
+        const userEmail = document.getElementById('userEmail')
+        const userInitials = document.getElementById('userInitials')
+        const logoutBtn = document.getElementById('logoutBtn')
+        
+        async function loadUserInfo() {
+            try {
+                const user = await auth.getUser()
+                if (user) {
+                    const fullName = user.user_metadata?.full_name || 'User'
+                    const email = user.email || 'user@example.com'
+                    userName.textContent = fullName
+                    userEmail.textContent = email
+                    const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                    userInitials.textContent = initials
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error)
+            }
+        }
+        
+        function toggleDropdown(e) {
+            e.stopPropagation()
+            userDropdown.classList.toggle('hidden')
+            userChevron.classList.toggle('rotate-180')
+        }
+        
+        function handleClickOutside(e) {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden')
+                userChevron.classList.remove('rotate-180')
+            }
+        }
+        
+        async function handleLogout(e) {
+            e.preventDefault()
+            try {
+                await auth.signOut()
+                window.location.href = 'login.html'
+            } catch (error) {
+                console.error('Logout failed:', error)
+            }
+        }
+        
+        function handleAccountSettings(e) {
+            e.preventDefault()
+            alert('Account settings page coming soon!')
+            userDropdown.classList.add('hidden')
+            userChevron.classList.remove('rotate-180')
+        }
+        
+        function handleProfile(e) {
+            e.preventDefault()
+            alert('Profile page coming soon!')
+            userDropdown.classList.add('hidden')
+            userChevron.classList.remove('rotate-180')
+        }
+        
+        if (userMenuButton) userMenuButton.addEventListener('click', toggleDropdown)
+        document.addEventListener('click', handleClickOutside)
+        if (logoutBtn) logoutBtn.addEventListener('click', handleLogout)
+        
+        const accountSettingsBtn = document.getElementById('accountSettingsBtn')
+        if (accountSettingsBtn) accountSettingsBtn.addEventListener('click', handleAccountSettings)
+        
+        const profileBtn = document.getElementById('profileBtn')
+        if (profileBtn) profileBtn.addEventListener('click', handleProfile)
+        
+        loadUserInfo()
+    </script>
+</body>
+</html>

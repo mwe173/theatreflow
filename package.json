@@ -1,0 +1,16 @@
+{
+  "name": "theatre-manager",
+  "version": "1.0.0",
+  "description": "Theatre Management System",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

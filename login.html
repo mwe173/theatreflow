@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Theatre Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .toggle-form { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-96">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-amber-400 font-display">TheatreFlow</h1>
+                <p class="text-gray-400 mt-2">Sign in to continue</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Email</label>
+                    <input type="email" id="email" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                </div>
+                <div id="loginError" class="text-red-400 text-sm hidden bg-red-400/10 p-2 rounded-lg"></div>
+                <button onclick="handleLogin()" class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg">
+                    Sign In
+                </button>
+                <p class="text-center text-gray-400 text-sm">
+                    Don't have an account? 
+                    <button onclick="showSignup()" class="text-amber-400 hover:underline">Sign up</button>
+                </p>
+            </div>
+            
+            <!-- Signup Form (hidden initially) -->
+            <div id="signupForm" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Full Name</label>
+                    <input type="text" id="fullName" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Email</label>
+                    <input type="email" id="signupEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Password</label>
+                    <input type="password" id="signupPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm mb-1">Role</label>
+                    <select id="signupRole" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                        <option value="cast">Cast Member</option>
+                        <option value="crew">Crew</option>
+                        <option value="stage_manager">Stage Manager</option>
+                        <option value="director">Director</option>
+                    </select>
+                </div>
+                <div id="signupError" class="text-red-400 text-sm hidden bg-red-400/10 p-2 rounded-lg"></div>
+                <button onclick="handleSignup()" class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg">
+                    Create Account
+                </button>
+                <p class="text-center text-gray-400 text-sm">
+                    Already have an account? 
+                    <button onclick="showLogin()" class="text-amber-400 hover:underline">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto"></div>
+            <p id="loadingMessage" class="text-white mt-4">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase first -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Wait for Supabase to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Supabase credentials
+            const SUPABASE_URL = import.meta?.env?.VITE_SUPABASE_URL;
+            const SUPABASE_ANON_KEY = import.meta?.env?.VITE_SUPABASE_ANON_KEY;
+
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            console.error('Supabase credentials not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+        }
+            
+            // Create Supabase client
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+            
+            // Loading functions
+            window.showLoading = function(message) {
+                document.getElementById('loadingMessage').textContent = message
+                document.getElementById('loadingOverlay').classList.remove('hidden')
+                document.getElementById('loadingOverlay').classList.add('flex')
+            }
+            
+            window.hideLoading = function() {
+                document.getElementById('loadingOverlay').classList.add('hidden')
+                document.getElementById('loadingOverlay').classList.remove('flex')
+            }
+            
+            // Toggle forms
+            window.showSignup = function() {
+                document.getElementById('loginForm').classList.add('hidden')
+                document.getElementById('signupForm').classList.remove('hidden')
+                document.getElementById('loginError').classList.add('hidden')
+                document.getElementById('signupError').classList.add('hidden')
+            }
+            
+            window.showLogin = function() {
+                document.getElementById('signupForm').classList.add('hidden')
+                document.getElementById('loginForm').classList.remove('hidden')
+                document.getElementById('loginError').classList.add('hidden')
+                document.getElementById('signupError').classList.add('hidden')
+            }
+            
+            // Login handler
+            window.handleLogin = async function() {
+                const email = document.getElementById('email').value
+                const password = document.getElementById('password').value
+                const errorEl = document.getElementById('loginError')
+                
+                if (!email || !password) {
+                    errorEl.textContent = 'Please enter both email and password'
+                    errorEl.classList.remove('hidden')
+                    return
+                }
+                
+                window.showLoading('Signing in...')
+                errorEl.classList.add('hidden')
+                
+                try {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                        email,
+                        password
+                    })
+                    
+                    window.hideLoading()
+                    
+                    if (error) {
+                        errorEl.textContent = error.message
+                        errorEl.classList.remove('hidden')
+                    } else {
+                        window.location.href = 'index.html'
+                    }
+                } catch (err) {
+                    window.hideLoading()
+                    errorEl.textContent = err.message
+                    errorEl.classList.remove('hidden')
+                }
+            }
+            
+            // Signup handler
+            window.handleSignup = async function() {
+                const name = document.getElementById('fullName').value
+                const email = document.getElementById('signupEmail').value
+                const password = document.getElementById('signupPassword').value
+                const role = document.getElementById('signupRole').value
+                const errorEl = document.getElementById('signupError')
+                
+                if (!name || !email || !password) {
+                    errorEl.textContent = 'Please fill in all fields'
+                    errorEl.classList.remove('hidden')
+                    return
+                }
+                
+                if (password.length < 6) {
+                    errorEl.textContent = 'Password must be at least 6 characters'
+                    errorEl.classList.remove('hidden')
+                    return
+                }
+                
+                window.showLoading('Creating account...')
+                errorEl.classList.add('hidden')
+                
+                try {
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: {
+                                full_name: name,
+                                role: role
+                            }
+                        }
+                    })
+                    
+                    window.hideLoading()
+                    
+                    if (error) {
+                        errorEl.textContent = error.message
+                        errorEl.classList.remove('hidden')
+                    } else {
+                        alert('Account created! You can now sign in.')
+                        window.showLogin()
+                        
+                        // Clear signup form
+                        document.getElementById('fullName').value = ''
+                        document.getElementById('signupEmail').value = ''
+                        document.getElementById('signupPassword').value = ''
+                    }
+                } catch (err) {
+                    window.hideLoading()
+                    errorEl.textContent = err.message
+                    errorEl.classList.remove('hidden')
+                }
+            }
+            
+            // Check if already logged in
+            async function checkSession() {
+                const { data: { session } } = await supabaseClient.auth.getSession()
+                if (session) {
+                    window.location.href = 'index.html'
+                }
+            }
+            
+            // Run check when page loads
+            checkSession()
+        })
+    </script>
+</body>
+</html>

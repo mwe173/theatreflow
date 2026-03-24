@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Management - Theatre Manager</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="h-full font-body overflow-hidden">
+    <div class="flex h-full w-full main-gradient">
+        
+       <!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar-glass flex-shrink-0 transition-all duration-300">
+    <div class="p-4 flex flex-col h-full">
+        
+        <!-- Theatre Logo & Toggle Button -->
+        <div class="flex items-center justify-between mb-6 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 4L4 8v8l8 4 8-4V8l-8-4z" stroke-width="1.5"/>
+                        <circle cx="12" cy="12" r="2" fill="white"/>
+                    </svg>
+                </div>
+                <div id="sidebar-title" class="sidebar-text-group">
+                    <h1 id="theatre-name" class="font-display text-lg font-bold text-amber-100 leading-tight">TheatreFlow</h1>
+                    <p class="text-xs text-amber-200/50">Theatre Manager</p>
+                </div>
+            </div>
+            
+            <!-- Collapse/Expand Button -->
+            <button id="toggleSidebar" class="w-7 h-7 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 flex items-center justify-center text-amber-200 transition-colors flex-shrink-0">
+                <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+            </button>
+        </div>
+        
+        <!-- Navigation - Scrollable container -->
+        <div class="sidebar-nav-container">
+            <div class="space-y-4 pr-2">
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">MAIN MENU</h3>
+                    <nav class="space-y-0.5">
+                        <a href="index.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-home w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Home</span>
+                        </a>
+                        
+                        <a href="people.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-users w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">People</span>
+                        </a>
+                        
+                        <a href="calendar.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-calendar-alt w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Calendar</span>
+                        </a>
+                        
+                        <a href="attendance.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clipboard-check w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Attendance</span>
+                        </a>
+                        
+                        <a href="scenes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-clapperboard w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Scenes</span>
+                        </a>
+                        
+                        <a href="props-costumes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-mask w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Props & Costumes</span>
+                        </a>
+                        
+                        <a href="files.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-folder w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group font-medium text-sm truncate">Files</span>
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Production Section -->
+                <div>
+                    <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">PRODUCTION</h3>
+                    <nav class="space-y-0.5">
+                        <a href="settings.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/60 hover:text-amber-100 text-sm group">
+                            <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                                <i class="fas fa-cog w-3.5 h-3.5"></i>
+                            </div>
+                            <span class="sidebar-text-group text-sm truncate">Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Profile with Dropdown Menu -->
+        <div class="mt-auto pt-4 flex-shrink-0 relative" id="userMenuContainer">
+            <div class="user-profile flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-amber-600/20 transition-colors" id="userMenuButton">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white font-semibold text-sm" id="userInitials">AD</span>
+                </div>
+                <div class="sidebar-text-group flex-1 min-w-0">
+                    <p class="text-xs font-medium text-amber-100 truncate" id="userName">Loading...</p>
+                    <p class="text-xs text-amber-200/50 truncate" id="userEmail">Loading...</p>
+                </div>
+                <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
+            </div>
+            
+            <!-- Dropdown Menu (hidden by default) -->
+            <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+                <div class="py-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
+                        <i class="fas fa-user-cog w-4 text-amber-400"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
+                        <i class="fas fa-id-card w-4 text-amber-400"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <div class="border-t border-gray-700 my-1"></div>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt w-4"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+        
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="flex-1 h-full overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+                
+                <!-- Header -->
+                <header class="mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div>
+                            <h1 class="font-display text-4xl font-bold text-amber-100">Cast & Crew Management</h1>
+                            <p class="text-amber-200/70">Manage your theatre students and their roles</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button id="openAddStudentModal" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Add Student
+                            </button>
+                                <div id="staffOnlyControls" class="hidden">
+        <button id="bulkImportBtn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-upload"></i>
+            Bulk Import
+        </button>
+    </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Filter Bar -->
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <div class="flex-1 min-w-[200px]">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-amber-200/40"></i>
+                            <input type="text" id="searchStudent" placeholder="Search students..." 
+                                   class="w-full pl-10 pr-4 py-2 bg-amber-600/10 border border-amber-600/20 rounded-lg text-amber-100 placeholder-amber-200/40 focus:outline-none focus:border-amber-600/40">
+                        </div>
+                    </div>
+                    
+                    <select id="roleFilter" class="px-4 py-2 bg-amber-600/10 border border-amber-600/20 rounded-lg text-amber-100">
+                        <option value="all">All Roles</option>
+                        <option value="main">Main Cast</option>
+                        <option value="ensemble">Ensemble</option>
+                        <option value="crew">Crew</option>
+                    </select>
+                    
+                    <select id="gradeFilter" class="px-4 py-2 bg-amber-600/10 border border-amber-600/20 rounded-lg text-amber-100">
+                        <option value="all">All Grades</option>
+                        <option value="9">9th Grade</option>
+                        <option value="10">10th Grade</option>
+                        <option value="11">11th Grade</option>
+                        <option value="12">12th Grade</option>
+                    </select>
+                    
+                    <select id="vocalFilter" class="px-4 py-2 bg-amber-600/10 border border-amber-600/20 rounded-lg text-amber-100">
+                        <option value="all">All Vocal Parts</option>
+                        <option value="soprano">Soprano</option>
+                        <option value="alto">Alto</option>
+                        <option value="tenor">Tenor</option>
+                        <option value="bass">Bass</option>
+                    </select>
+                </div>
+
+                <!-- Students Grid -->
+                <div id="studentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+                    <!-- Students will be dynamically added here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="text-center py-12 hidden">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-amber-600/20 flex items-center justify-center">
+                        <i class="fas fa-users text-4xl text-amber-600/40"></i>
+                    </div>
+                    <h3 class="font-display text-xl text-amber-100 mb-2">No Students Yet</h3>
+                    <p class="text-amber-200/50 mb-4">Get started by adding your first student</p>
+                    <button id="emptyStateAddBtn" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors inline-flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Add Your First Student
+                    </button>
+                </div>
+
+                <!-- People Stats -->
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="stat-card rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                            <i class="fas fa-users"></i>
+                            <span>Total</span>
+                        </div>
+                        <p id="totalStudents" class="font-display text-2xl font-bold text-amber-100">0</p>
+                    </div>
+                    <div class="stat-card rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                            <i class="fas fa-star"></i>
+                            <span>Main Cast</span>
+                        </div>
+                        <p id="mainCount" class="font-display text-2xl font-bold text-amber-100">0</p>
+                    </div>
+                    <div class="stat-card rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                            <i class="fas fa-users"></i>
+                            <span>Ensemble</span>
+                        </div>
+                        <p id="ensembleCount" class="font-display text-2xl font-bold text-amber-100">0</p>
+                    </div>
+                    <div class="stat-card rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                            <i class="fas fa-tools"></i>
+                            <span>Crew</span>
+                        </div>
+                        <p id="crewCount" class="font-display text-2xl font-bold text-amber-100">0</p>
+                    </div>
+                    <div class="stat-card rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+                            <i class="fas fa-music"></i>
+                            <span>With Vocals</span>
+                        </div>
+                        <p id="vocalCount" class="font-display text-2xl font-bold text-amber-100">0</p>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-8 text-center text-amber-200/40 text-sm">
+                    <p>🎭 Break a leg! — TheatreFlow</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="studentModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+        <div class="bg-gradient-to-br from-amber-900/90 to-amber-950/90 rounded-2xl w-full max-w-2xl border border-amber-600/30 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 id="modalTitle" class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+                        <i class="fas fa-user-plus text-amber-400"></i>
+                        <span id="modalTitleText">Add New Student</span>
+                    </h3>
+                    <button id="closeModal" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="studentForm" class="space-y-6">
+                    <input type="hidden" id="studentId" value="">
+                    
+                    <!-- Basic Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-amber-200/70 text-sm mb-1">Student Name *</label>
+                            <input type="text" id="studentName" required 
+                                   class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-amber-200/70 text-sm mb-1">Grade *</label>
+                            <select id="studentGrade" required class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 focus:outline-none focus:border-amber-600">
+                                <option value="">Select grade</option>
+                                <option value="9">9th Grade</option>
+                                <option value="10">10th Grade</option>
+                                <option value="11">11th Grade</option>
+                                <option value="12">12th Grade</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Multiple Roles Selection -->
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-2">Roles * (Select all that apply)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="flex items-center p-3 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="roleMain" value="main" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-3 text-amber-100">Main Cast</span>
+                            </label>
+                            
+                            <label class="flex items-center p-3 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="roleEnsemble" value="ensemble" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-3 text-amber-100">Ensemble</span>
+                            </label>
+                            
+                            <label class="flex items-center p-3 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="roleCrew" value="crew" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-3 text-amber-100">Crew</span>
+                            </label>
+                        </div>
+                        <p id="roleError" class="text-red-400 text-xs mt-1 hidden">Please select at least one role</p>
+                    </div>
+                    
+                    <!-- Vocal Parts Section -->
+                    <div id="vocalPartsSection" class="space-y-3 hidden">
+                        <label class="block text-amber-200/70 text-sm mb-1">Vocal Parts (Select all that apply)</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="vocalSoprano" value="soprano" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Soprano</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="vocalAlto" value="alto" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Alto</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="vocalTenor" value="tenor" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Tenor</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="vocalBass" value="bass" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Bass</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Crew Specialties -->
+                    <div id="crewSpecialtiesSection" class="space-y-3 hidden">
+                        <label class="block text-amber-200/70 text-sm mb-1">Crew Specialties (Select all that apply)</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewLights" value="lights" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Lights</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewSound" value="sound" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Sound</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewCurtains" value="curtains" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Curtains</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewSet" value="set" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Set</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewCostumes" value="costumes" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Costumes</span>
+                            </label>
+                            
+                            <label class="flex items-center p-2 bg-amber-950/50 border border-amber-600/30 rounded-lg cursor-pointer hover:bg-amber-600/20 transition-colors">
+                                <input type="checkbox" id="crewProps" value="props" class="w-4 h-4 text-amber-600 bg-amber-950 border-amber-600 rounded focus:ring-amber-600 focus:ring-offset-0">
+                                <span class="ml-2 text-amber-100 text-sm">Props</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes Field -->
+                    <div>
+                        <label class="block text-amber-200/70 text-sm mb-1">Notes</label>
+                        <textarea id="studentNotes" rows="2" 
+                                  class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100 placeholder-amber-200/30 focus:outline-none focus:border-amber-600"
+                                  placeholder="Additional information..."></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors">
+                            <span id="submitButtonText">Add Student</span>
+                        </button>
+                        <button type="button" id="cancelModal" class="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="people-management.js"></script>
+    <script type="module" src="index.js"></script>
+    <script type="module">
+    import { auth } from './supabase.js'
+    
+    async function checkAuth() {
+        const session = await auth.getSession()
+        if (!session) {
+            window.location.href = 'login.html'
+        }
+    }
+    
+    checkAuth()
+</script>
+<!-- User Menu Script -->
+<script type="module">
+    import { auth } from './supabase.js'
+    
+    // DOM Elements
+    const userMenuButton = document.getElementById('userMenuButton')
+    const userDropdown = document.getElementById('userDropdown')
+    const userChevron = document.getElementById('userMenuChevron')
+    const userName = document.getElementById('userName')
+    const userEmail = document.getElementById('userEmail')
+    const userInitials = document.getElementById('userInitials')
+    const logoutBtn = document.getElementById('logoutBtn')
+    
+    // Load user info
+    async function loadUserInfo() {
+        try {
+            const user = await auth.getUser()
+            if (user) {
+                // Get user metadata
+                const fullName = user.user_metadata?.full_name || 'User'
+                const email = user.email || 'user@example.com'
+                
+                // Update UI
+                userName.textContent = fullName
+                userEmail.textContent = email
+                
+                // Set initials
+                const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                userInitials.textContent = initials
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error)
+        }
+    }
+    
+    // Toggle dropdown menu
+    function toggleDropdown(e) {
+        e.stopPropagation()
+        userDropdown.classList.toggle('hidden')
+        userChevron.classList.toggle('rotate-180')
+    }
+    
+    // Hide dropdown when clicking outside
+    function handleClickOutside(e) {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.add('hidden')
+            userChevron.classList.remove('rotate-180')
+        }
+    }
+    
+    // Logout function
+    async function handleLogout(e) {
+        e.preventDefault()
+        try {
+            await auth.signOut()
+            window.location.href = 'login.html'
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    }
+    
+    // Account settings (placeholder)
+    function handleAccountSettings(e) {
+        e.preventDefault()
+        alert('Account settings page coming soon!')
+        userDropdown.classList.add('hidden')
+        userChevron.classList.remove('rotate-180')
+    }
+    
+    // Profile (placeholder)
+    function handleProfile(e) {
+        e.preventDefault()
+        alert('Profile page coming soon!')
+        userDropdown.classList.add('hidden')
+        userChevron.classList.remove('rotate-180')
+    }
+    
+    // Event listeners
+    if (userMenuButton) {
+        userMenuButton.addEventListener('click', toggleDropdown)
+    }
+    
+    document.addEventListener('click', handleClickOutside)
+    
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout)
+    }
+    
+    const accountSettingsBtn = document.getElementById('accountSettingsBtn')
+    if (accountSettingsBtn) {
+        accountSettingsBtn.addEventListener('click', handleAccountSettings)
+    }
+    
+    const profileBtn = document.getElementById('profileBtn')
+    if (profileBtn) {
+        profileBtn.addEventListener('click', handleProfile)
+    }
+    
+    // Load user info when page loads
+    loadUserInfo()
+</script>
+</body>
+</html>

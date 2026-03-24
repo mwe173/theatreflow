@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Theatre Manager</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Additional sidebar fixes */
+    .sidebar-glass {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .sidebar-nav-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #1e293b;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    
+    .sidebar-nav-container::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    
+    .sidebar-item {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    @media (max-width: 1024px) {
+      .sidebar-glass {
+        position: fixed;
+        left: -18rem;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+      }
+      
+      .sidebar-glass.mobile-open {
+        left: 0;
+      }
+      
+      #mobileMenuBtn {
+        display: inline-flex !important;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      #mobileMenuBtn {
+        display: none !important;
+      }
+    }
+
+    /* Settings page specific styles */
+    .settings-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .settings-card:hover {
+      border-color: #475569;
+      background: #2d3a4f;
+    }
+
+    .settings-input {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 0.5rem;
+      color: #e2e8f0;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .settings-input:focus {
+      outline: none;
+      border-color: #b45309;
+      box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+    }
+
+    .settings-select {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 0.5rem;
+      color: #e2e8f0;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .settings-select:focus {
+      outline: none;
+      border-color: #b45309;
+    }
+
+    /* Toast styles */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .toast {
+      min-width: 280px;
+      max-width: 350px;
+      background: #1e293b;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      border-left: 4px solid;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+    .toast.warning { border-left-color: #f59e0b; }
+    .toast.info { border-left-color: #3b82f6; }
+    
+    .toast-icon { font-size: 1.25rem; flex-shrink: 0; }
+    .toast.success .toast-icon { color: #10b981; }
+    .toast.error .toast-icon { color: #ef4444; }
+    .toast.warning .toast-icon { color: #f59e0b; }
+    .toast.info .toast-icon { color: #3b82f6; }
+    
+    .toast-content { flex: 1; }
+    .toast-title { font-weight: 600; color: #f1f5f9; margin-bottom: 0.25rem; font-size: 0.875rem; }
+    .toast-message { font-size: 0.8125rem; color: #94a3b8; }
+    
+    .toast-close {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toast-close:hover { color: #f1f5f9; }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .toast.hiding { animation: slideOut 0.3s ease forwards; }
+  </style>
+</head>
+<body class="h-full font-body overflow-hidden">
+  
+  <!-- MAIN CONTAINER -->
+  <div class="flex h-full w-full main-gradient">
+    
+    <!-- ===== SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar-glass flex-shrink-0 transition-all duration-300">
+      <div class="p-4 flex flex-col h-full">
+        
+        <!-- Theatre Logo & Toggle Button -->
+        <div class="flex items-center justify-between mb-6 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 4L4 8v8l8 4 8-4V8l-8-4z" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="2" fill="white"/>
+              </svg>
+            </div>
+            <div id="sidebar-title" class="sidebar-text-group">
+              <h1 id="theatre-name" class="font-display text-lg font-bold text-amber-100 leading-tight">TheatreFlow</h1>
+              <p class="text-xs text-amber-200/50">Theatre Manager</p>
+            </div>
+          </div>
+          
+          <!-- Collapse/Expand Button -->
+          <button id="toggleSidebar" class="w-7 h-7 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 flex items-center justify-center text-amber-200 transition-colors flex-shrink-0">
+            <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+          </button>
+        </div>
+        
+        <!-- Navigation - Scrollable container -->
+        <div class="sidebar-nav-container">
+          <div class="space-y-4 pr-2">
+            <div>
+              <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">MAIN MENU</h3>
+              <nav class="space-y-0.5">
+                <a href="index.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-home w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Home</span>
+                </a>
+                
+                <a href="people.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-users w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">People</span>
+                </a>
+                
+                <a href="calendar.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-calendar-alt w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Calendar</span>
+                </a>
+                
+                <a href="attendance.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-clipboard-check w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Attendance</span>
+                </a>
+                
+                <a href="scenes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-clapperboard w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Scenes</span>
+                </a>
+                
+                <a href="props-costumes.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-mask w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Props & Costumes</span>
+                </a>
+                
+                <a href="files.html" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-amber-200/80 hover:text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-amber-600/20 flex-shrink-0">
+                    <i class="fas fa-folder w-3.5 h-3.5"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Files</span>
+                </a>
+              </nav>
+            </div>
+            
+            <!-- Production Section -->
+            <div>
+              <h3 class="sidebar-text-group text-xs uppercase tracking-wider text-amber-200/40 font-semibold mb-2 px-3">PRODUCTION</h3>
+              <nav class="space-y-0.5">
+                <a href="settings.html" class="sidebar-item active flex items-center gap-3 px-3 py-2 rounded-lg text-amber-100 group">
+                  <div class="w-7 h-7 rounded-lg bg-amber-600/20 flex items-center justify-center group-hover:bg-amber-600/30 flex-shrink-0">
+                    <i class="fas fa-cog w-3.5 h-3.5 text-amber-300"></i>
+                  </div>
+                  <span class="sidebar-text-group font-medium text-sm truncate">Settings</span>
+                </a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        
+        <!-- User Profile with Dropdown Menu -->
+        <div class="mt-auto pt-4 flex-shrink-0 relative" id="userMenuContainer">
+          <div class="user-profile flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-amber-600/20 transition-colors" id="userMenuButton">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center flex-shrink-0">
+              <span class="text-white font-semibold text-sm" id="userInitials">AD</span>
+            </div>
+            <div class="sidebar-text-group flex-1 min-w-0">
+              <p class="text-xs font-medium text-amber-100 truncate" id="userName">Loading...</p>
+              <p class="text-xs text-amber-200/50 truncate" id="userEmail">Loading...</p>
+            </div>
+            <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
+          </div>
+          
+          <!-- Dropdown Menu -->
+          <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+            <div class="py-1">
+              <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
+                <i class="fas fa-user-cog w-4 text-amber-400"></i>
+                <span>Account Settings</span>
+              </a>
+              <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
+                <i class="fas fa-id-card w-4 text-amber-400"></i>
+                <span>My Profile</span>
+              </a>
+              <div class="border-t border-gray-700 my-1"></div>
+              <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+                <i class="fas fa-sign-out-alt w-4"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="flex-1 h-full overflow-y-auto">
+      <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Header -->
+        <header class="mb-8">
+          <div class="flex justify-between items-center">
+            <div>
+              <h1 class="font-display text-4xl font-bold text-amber-100">Settings</h1>
+              <p class="text-amber-200/70">Manage your shows and preferences</p>
+            </div>
+          </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Show Settings -->
+          <div class="settings-card">
+            <h2 class="font-display text-xl font-semibold text-amber-100 mb-4 flex items-center gap-2">
+              <i class="fas fa-theater-masks text-amber-400"></i>
+              Show Management
+            </h2>
+            
+            <div class="space-y-4">
+              <!-- Current Show Display -->
+              <div>
+                <label class="block text-amber-200/70 text-sm mb-1">Current Show</label>
+                <div class="flex items-center gap-3">
+                  <div class="flex-1 bg-amber-600/10 rounded-lg p-3 border border-amber-600/30">
+                    <span id="currentShowName" class="text-amber-100 font-medium">Loading...</span>
+                    <span class="ml-2 text-xs text-amber-400">(Active)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Switch Show -->
+              <div>
+                <label class="block text-amber-200/70 text-sm mb-1">Switch to Show</label>
+                <select id="showSelect" class="settings-select">
+                  <option value="">Select a show...</option>
+                </select>
+              </div>
+              
+              <!-- Create New Show Button -->
+              <button id="createNewShowBtn" class="w-full mt-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i>
+                Create New Show
+              </button>
+            </div>
+          </div>
+          
+          <!-- Preferences -->
+          <div class="settings-card">
+            <h2 class="font-display text-xl font-semibold text-amber-100 mb-4 flex items-center gap-2">
+              <i class="fas fa-palette text-amber-400"></i>
+              Preferences
+            </h2>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-amber-200/70 text-sm mb-1">Theme</label>
+                <select id="themeSelect" class="settings-select">
+                  <option value="dark">Dark Mode</option>
+                  <option value="light">Light Mode</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-amber-200/70 text-sm mb-1">Notifications</label>
+                <select id="notificationsSelect" class="settings-select">
+                  <option value="on">On</option>
+                  <option value="off">Off</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Save/Cancel Buttons -->
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="saveSettingsBtn" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+            <i class="fas fa-save mr-2"></i>Save Changes
+          </button>
+          <button id="cancelSettingsBtn" class="px-6 py-2 bg-gray-600/20 hover:bg-gray-600/30 text-amber-200 rounded-lg transition-colors">
+            <i class="fas fa-times mr-2"></i>Cancel
+          </button>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-amber-200/40 text-sm">
+          <p>🎭 Break a leg! — TheatreFlow</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create New Show Modal -->
+  <div id="createShowModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+    <div class="bg-gradient-to-br from-amber-900/90 to-amber-950/90 rounded-2xl w-full max-w-md border border-amber-600/30 shadow-2xl">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-display text-xl font-semibold text-amber-100 flex items-center gap-2">
+            <i class="fas fa-plus-circle text-amber-400"></i>
+            Create New Show
+          </h3>
+          <button id="closeCreateShowModal" class="w-8 h-8 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Show Name *</label>
+            <input type="text" id="newShowName" class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100" placeholder="e.g., Romeo & Juliet">
+          </div>
+          
+          <div>
+            <label class="block text-amber-200/70 text-sm mb-1">Copy from existing show (optional)</label>
+            <select id="copyFromShow" class="w-full px-4 py-2 bg-amber-950/50 border border-amber-600/30 rounded-lg text-amber-100">
+              <option value="">-- None (Start Fresh) --</option>
+            </select>
+            <p class="text-xs text-amber-200/30 mt-1">This will copy cast, crew, and props/costumes from the selected show</p>
+          </div>
+          
+          <div class="flex gap-3 pt-4">
+            <button id="confirmCreateShowBtn" class="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors">
+              Create Show
+            </button>
+            <button id="cancelCreateShowBtn" class="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  
+  <!-- Main Settings Script -->
+  <script type="module">
+    import { auth, supabase } from './supabase.js'
+    
+    // DOM Elements
+    const userMenuButton = document.getElementById('userMenuButton')
+    const userDropdown = document.getElementById('userDropdown')
+    const userChevron = document.getElementById('userMenuChevron')
+    const userName = document.getElementById('userName')
+    const userEmail = document.getElementById('userEmail')
+    const userInitials = document.getElementById('userInitials')
+    const logoutBtn = document.getElementById('logoutBtn')
+    
+    const showSelect = document.getElementById('showSelect')
+    const currentShowNameSpan = document.getElementById('currentShowName')
+    const createNewShowBtn = document.getElementById('createNewShowBtn')
+    const createShowModal = document.getElementById('createShowModal')
+    const closeCreateShowModal = document.getElementById('closeCreateShowModal')
+    const cancelCreateShowBtn = document.getElementById('cancelCreateShowBtn')
+    const confirmCreateShowBtn = document.getElementById('confirmCreateShowBtn')
+    const newShowNameInput = document.getElementById('newShowName')
+    const copyFromShowSelect = document.getElementById('copyFromShow')
+    const themeSelect = document.getElementById('themeSelect')
+    const notificationsSelect = document.getElementById('notificationsSelect')
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn')
+    const cancelSettingsBtn = document.getElementById('cancelSettingsBtn')
+    
+    let shows = []
+    let currentShowId = localStorage.getItem('currentShowId') || null
+    
+    // Toast function
+    window.showToast = function(message, type = 'info', title = '') {
+      const container = document.getElementById('toast-container')
+      if (!container) return
+      
+      const titles = { success: 'Success', error: 'Error', warning: 'Warning', info: 'Notice' }
+      const finalTitle = title || titles[type] || 'Notice'
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' }
+      const icon = icons[type] || 'fa-info-circle'
+      
+      const toast = document.createElement('div')
+      toast.className = `toast ${type}`
+      toast.innerHTML = `
+        <div class="toast-icon"><i class="fas ${icon}"></i></div>
+        <div class="toast-content"><div class="toast-title">${finalTitle}</div><div class="toast-message">${message}</div></div>
+        <button class="toast-close"><i class="fas fa-times"></i></button>
+      `
+      
+      container.appendChild(toast)
+      
+      const closeBtn = toast.querySelector('.toast-close')
+      closeBtn.addEventListener('click', () => {
+        toast.classList.add('hiding')
+        setTimeout(() => toast.remove(), 300)
+      })
+      
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.classList.add('hiding')
+          setTimeout(() => toast.remove(), 300)
+        }
+      }, 4000)
+    }
+    
+    // Load user info for sidebar
+    async function loadUserInfo() {
+      try {
+        const user = await auth.getUser()
+        if (user) {
+          const fullName = user.user_metadata?.full_name || 'User'
+          const email = user.email || 'user@example.com'
+          userName.textContent = fullName
+          userEmail.textContent = email
+          const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+          userInitials.textContent = initials
+        }
+      } catch (error) {
+        console.error('Error loading user info:', error)
+      }
+    }
+    
+    // Load shows
+    async function loadShows() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        
+        const { data, error } = await supabase
+          .from('shows')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+        
+        if (error) throw error
+        
+        shows = data || []
+        
+        // Populate selects
+        if (showSelect) showSelect.innerHTML = '<option value="">Select a show...</option>'
+        if (copyFromShowSelect) copyFromShowSelect.innerHTML = '<option value="">-- None (Start Fresh) --</option>'
+        
+        shows.forEach(show => {
+          if (showSelect) {
+            const option = document.createElement('option')
+            option.value = show.id
+            option.textContent = show.name
+            showSelect.appendChild(option)
+          }
+          if (copyFromShowSelect) {
+            const option = document.createElement('option')
+            option.value = show.id
+            option.textContent = show.name
+            copyFromShowSelect.appendChild(option)
+          }
+        })
+        
+        // Set current show
+        if (currentShowId && shows.find(s => s.id == currentShowId)) {
+          const currentShow = shows.find(s => s.id == currentShowId)
+          currentShowNameSpan.textContent = currentShow.name
+          if (showSelect) showSelect.value = currentShowId
+        } else if (shows.length > 0) {
+          currentShowId = shows[0].id
+          localStorage.setItem('currentShowId', currentShowId)
+          currentShowNameSpan.textContent = shows[0].name
+          if (showSelect) showSelect.value = currentShowId
+        } else {
+          currentShowNameSpan.textContent = 'No shows yet'
+        }
+        
+      } catch (error) {
+        console.error('Error loading shows:', error)
+      }
+    }
+    
+    // Switch show
+    async function switchShow(showId) {
+      const show = shows.find(s => s.id == showId)
+      if (!show) return
+      
+      currentShowId = showId
+      localStorage.setItem('currentShowId', currentShowId)
+      currentShowNameSpan.textContent = show.name
+      
+      showToast(`Switched to "${show.name}"`, 'success')
+      
+      setTimeout(() => {
+        if (confirm('Show changed. Reload page to see updated data?')) {
+          window.location.reload()
+        }
+      }, 500)
+    }
+    
+    // Create new show
+    async function createNewShow() {
+      const showName = newShowNameInput?.value.trim()
+      if (!showName) {
+        showToast('Please enter a show name', 'warning')
+        return
+      }
+      
+      const copyFromId = copyFromShowSelect?.value
+      
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error('Not authenticated')
+        
+        const { data: newShow, error: showError } = await supabase
+          .from('shows')
+          .insert([{ name: showName, user_id: user.id, created_at: new Date().toISOString() }])
+          .select()
+          .single()
+        
+        if (showError) throw showError
+        
+        if (copyFromId) {
+          await copyShowData(copyFromId, newShow.id, user.id)
+          showToast(`Show "${showName}" created with data from existing show!`, 'success')
+        } else {
+          showToast(`Show "${showName}" created successfully!`, 'success')
+        }
+        
+        closeCreateShowModalFunc()
+        newShowNameInput.value = ''
+        await loadShows()
+        await switchShow(newShow.id)
+        
+      } catch (error) {
+        console.error('Error creating show:', error)
+        showToast('Error creating show: ' + error.message, 'error')
+      }
+    }
+    
+    // Copy data from existing show
+    async function copyShowData(sourceShowId, targetShowId, userId) {
+      try {
+        const { data: students } = await supabase
+          .from('students')
+          .select('*')
+          .eq('show_id', sourceShowId)
+          .eq('user_id', userId)
+        
+        if (students && students.length > 0) {
+          const studentsToCopy = students.map(s => ({
+            name: s.name, grade: s.grade, roles: s.roles,
+            vocal_parts: s.vocal_parts, crew_specialties: s.crew_specialties,
+            notes: s.notes, show_id: targetShowId, user_id: userId
+          }))
+          await supabase.from('students').insert(studentsToCopy)
+        }
+        
+        const { data: inventory } = await supabase
+          .from('inventory')
+          .select('*')
+          .eq('show_id', sourceShowId)
+          .eq('user_id', userId)
+        
+        if (inventory && inventory.length > 0) {
+          const inventoryToCopy = inventory.map(i => ({
+            name: i.name, category: i.category, quantity: i.quantity,
+            condition: i.condition, location: i.location, assigned_to: i.assigned_to,
+            notes: i.notes, status: i.status, show_id: targetShowId, user_id: userId,
+            last_checked: new Date().toISOString().split('T')[0]
+          }))
+          await supabase.from('inventory').insert(inventoryToCopy)
+        }
+        
+      } catch (error) {
+        console.error('Error copying data:', error)
+      }
+    }
+    
+    // Save preferences
+    function savePreferences() {
+      const theme = themeSelect?.value
+      const notifications = notificationsSelect?.value
+      
+      if (theme) localStorage.setItem('theme', theme)
+      if (notifications) localStorage.setItem('notifications', notifications)
+      
+      if (theme === 'light') {
+        document.documentElement.classList.add('light-mode')
+        document.body.classList.add('light-mode')
+      } else {
+        document.documentElement.classList.remove('light-mode')
+        document.body.classList.remove('light-mode')
+      }
+      
+      showToast('Preferences saved!', 'success')
+    }
+    
+    // Load preferences
+    function loadPreferences() {
+      const savedTheme = localStorage.getItem('theme') || 'dark'
+      const savedNotifications = localStorage.getItem('notifications') || 'on'
+      
+      if (themeSelect) themeSelect.value = savedTheme
+      if (notificationsSelect) notificationsSelect.value = savedNotifications
+      
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-mode')
+        document.body.classList.add('light-mode')
+      }
+    }
+    
+    // Modal functions
+    function openCreateShowModalFunc() {
+      createShowModal.classList.remove('hidden')
+      createShowModal.classList.add('flex')
+    }
+    
+    function closeCreateShowModalFunc() {
+      createShowModal.classList.add('hidden')
+      createShowModal.classList.remove('flex')
+      if (newShowNameInput) newShowNameInput.value = ''
+      if (copyFromShowSelect) copyFromShowSelect.value = ''
+    }
+    
+    // User menu functions
+    function toggleDropdown(e) {
+      e.stopPropagation()
+      userDropdown.classList.toggle('hidden')
+      userChevron.classList.toggle('rotate-180')
+    }
+    
+    function handleClickOutside(e) {
+      if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.add('hidden')
+        userChevron.classList.remove('rotate-180')
+      }
+    }
+    
+    async function handleLogout(e) {
+      e.preventDefault()
+      try {
+        await auth.signOut()
+        window.location.href = 'login.html'
+      } catch (error) {
+        console.error('Logout failed:', error)
+      }
+    }
+    
+    function handleAccountSettings(e) {
+      e.preventDefault()
+      showToast('Account settings coming soon!', 'info')
+      userDropdown.classList.add('hidden')
+      userChevron.classList.remove('rotate-180')
+    }
+    
+    function handleProfile(e) {
+      e.preventDefault()
+      showToast('Profile page coming soon!', 'info')
+      userDropdown.classList.add('hidden')
+      userChevron.classList.remove('rotate-180')
+    }
+    
+    // Event listeners
+    if (userMenuButton) userMenuButton.addEventListener('click', toggleDropdown)
+    document.addEventListener('click', handleClickOutside)
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout)
+    
+    const accountSettingsBtn = document.getElementById('accountSettingsBtn')
+    if (accountSettingsBtn) accountSettingsBtn.addEventListener('click', handleAccountSettings)
+    
+    const profileBtn = document.getElementById('profileBtn')
+    if (profileBtn) profileBtn.addEventListener('click', handleProfile)
+    
+    if (createNewShowBtn) createNewShowBtn.addEventListener('click', openCreateShowModalFunc)
+    if (closeCreateShowModal) closeCreateShowModal.addEventListener('click', closeCreateShowModalFunc)
+    if (cancelCreateShowBtn) cancelCreateShowBtn.addEventListener('click', closeCreateShowModalFunc)
+    if (confirmCreateShowBtn) confirmCreateShowBtn.addEventListener('click', createNewShow)
+    
+    if (showSelect) {
+      showSelect.addEventListener('change', (e) => {
+        if (e.target.value) switchShow(e.target.value)
+      })
+    }
+    
+    if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', savePreferences)
+    if (cancelSettingsBtn) cancelSettingsBtn.addEventListener('click', loadPreferences)
+    
+    // Initialize
+    loadUserInfo()
+    loadShows()
+    loadPreferences()
+    
+  </script>
+</body>
+</html>
