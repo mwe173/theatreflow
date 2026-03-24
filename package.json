@@ -11,6 +11,18 @@
     "@supabase/supabase-js": "^2.39.0"
   },
   "devDependencies": {
-    "live-server": "^1.2.2"
-  }
+    "live-server": "^1.2.2",
+    "vite": "^8.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwe173/theatreflow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mwe173/theatreflow/issues"
+  },
+  "homepage": "https://github.com/mwe173/theatreflow#readme"
 }
