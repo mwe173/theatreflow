@@ -1,13 +1,12 @@
-// supabase.js
-import { createClient } from '@supabase/supabase-js'
+// supabase.js - Use CDN instead of npm package
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-// These will be replaced by Vite at build time
+// Get environment variables from Vite (these will be replaced at build time)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
     console.error('❌ Missing Supabase environment variables!')
-    console.error('Create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -44,6 +43,7 @@ export const auth = {
     }
 }
 
+// API helpers
 export const api = {
     students: {
         getAll: async () => await supabase.from('students').select('*')
