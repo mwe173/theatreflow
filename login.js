@@ -1,9 +1,6 @@
 // login.js
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+import { createClient } from '@supabase/supabase-js'
 
-// These will be replaced by Vite at build time
-// For local development, they come from .env file
-// For Vercel, they come from Environment Variables in dashboard
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
