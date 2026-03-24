@@ -1,11 +1,15 @@
-// supabase.js - Use CDN instead of npm package
+// supabase.js
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-// Get environment variables from Vite, with fallback for Vercel
-const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://qqkajtpgkyvjxxrepxbr.supabase.co'
-const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa2FqdHBna3l2anh4cmVweGJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzU3MzgsImV4cCI6MjA4NzgxMTczOH0.IuHL40C5Rx95MsUHYWXU_pPZLCxcMsX4m_PjH4jeLMU'
+// Get from environment variables (set in .env locally, Vercel dashboard in production)
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-console.log('Supabase URL configured:', !!supabaseUrl)
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('❌ Missing Supabase environment variables!')
+    console.error('Local: Create .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY')
+    console.error('Production: Set environment variables in Vercel dashboard')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
@@ -41,23 +45,12 @@ export const auth = {
     }
 }
 
-// API helpers
 export const api = {
-    students: {
-        getAll: async () => await supabase.from('students').select('*')
-    },
-    events: {
-        getAll: async () => await supabase.from('events').select('*')
-    },
-    attendance: {
-        getByDate: async (date) => await supabase.from('attendance').select('*').eq('date', date)
-    },
-    inventory: {
-        getAll: async () => await supabase.from('inventory').select('*')
-    },
-    files: {
-        getAll: async () => await supabase.from('files').select('*')
-    }
+    students: { getAll: async () => await supabase.from('students').select('*') },
+    events: { getAll: async () => await supabase.from('events').select('*') },
+    attendance: { getByDate: async (date) => await supabase.from('attendance').select('*').eq('date', date) },
+    inventory: { getAll: async () => await supabase.from('inventory').select('*') },
+    files: { getAll: async () => await supabase.from('files').select('*') }
 }
 
 export const realtime = {
