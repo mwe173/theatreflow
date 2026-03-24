@@ -19,18 +19,14 @@ export default defineConfig(({ command, mode }) => {
           files: resolve(__dirname, 'files.html'),
           settings: resolve(__dirname, 'settings.html'),
           scenes: resolve(__dirname, 'scenes.html')
-        },
-        // Make sure external modules are bundled
-        external: []
-      },
-      // Ensure modules are bundled, not left as external
-      commonjsOptions: {
-        include: [/node_modules/]
+        }
       }
     },
+    // Force dependencies to be optimized
     optimizeDeps: {
       include: ['@supabase/supabase-js']
     },
+    // Make environment variables available
     define: {
       'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(env.VITE_SUPABASE_URL),
       'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(env.VITE_SUPABASE_ANON_KEY)
