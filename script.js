@@ -348,3 +348,41 @@ function showConfirmModal(message, title = 'Confirm Action', confirmText = 'Yes,
 
 // Replace the native confirm with custom modal
 window.confirm = showConfirmModal;
+
+// ===== THEME MANAGEMENT =====
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        document.documentElement.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+        document.documentElement.classList.remove('light-mode');
+    }
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+    return savedTheme;
+}
+
+function setTheme(theme) {
+    localStorage.setItem('theme', theme);
+    applyTheme(theme);
+    
+    // Also update the settings page dropdown if it exists
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) {
+        themeSelect.value = theme;
+    }
+}
+
+// Make theme functions available globally
+window.applyTheme = applyTheme;
+window.loadTheme = loadTheme;
+window.setTheme = setTheme;
+
+// Load theme when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    loadTheme();
+});

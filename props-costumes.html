@@ -199,6 +199,30 @@ textarea::placeholder {
     opacity: 0.5 !important;
 }
 
+/* Fix modal text contrast */
+#inventoryModal .text-amber-200\/70 {
+    color: #e2e8f0 !important;
+}
+
+body.light-mode #inventoryModal .text-amber-200\/70 {
+    color: #334155 !important;
+}
+
+#inventoryModal .text-xs.text-amber-200\/30 {
+    color: #94a3b8 !important;
+}
+
+/* Fix placeholder text */
+#inventoryModal input::placeholder,
+#inventoryModal textarea::placeholder,
+#inventoryModal select {
+    color: #94a3b8 !important;
+}
+
+body.light-mode #inventoryModal input::placeholder,
+body.light-mode #inventoryModal textarea::placeholder {
+    color: #94a3b8 !important;
+}
     </style>
 </head>
 <body class="h-full font-body overflow-hidden">

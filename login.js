@@ -58,6 +58,7 @@ window.showLogin = function() {
     document.getElementById('signupError').classList.add('hidden')
 }
 
+// In login.js, update the handleLogin function - add this after successful login
 window.handleLogin = async function() {
     const email = document.getElementById('email').value
     const password = document.getElementById('password').value
@@ -84,7 +85,36 @@ window.handleLogin = async function() {
             errorEl.textContent = error.message
             errorEl.classList.remove('hidden')
         } else {
-            window.location.href = 'index.html'
+            // CHECK IF USER HAS ANY SHOWS
+            const { data: shows, error: showsError } = await supabaseClient
+                .from('shows')
+                .select('id')
+                .eq('user_id', data.user.id)
+                .limit(1)
+            
+            if (showsError) {
+                console.error('Error checking shows:', showsError)
+                window.location.href = 'index.html'
+                return
+            }
+            
+            // If no shows exist, redirect to settings page with welcome message
+            if (!shows || shows.length === 0) {
+                // Store a flag to show welcome message
+                localStorage.setItem('newUserWelcome', 'true')
+                window.location.href = 'settings.html?new=true'
+            } else {
+                // Check if this is a returning user who just created their first show
+                const justCreatedShow = localStorage.getItem('justCreatedShow')
+                if (justCreatedShow === 'true') {
+                    localStorage.removeItem('justCreatedShow')
+                    // Show a toast or alert that they can now add data
+                    setTimeout(() => {
+                        alert('🎉 Welcome! Your show is ready. Now you can:\n\n• Add students to your cast & crew\n• Create calendar events\n• Track attendance\n• Manage props and costumes')
+                    }, 500)
+                }
+                window.location.href = 'index.html'
+            }
         }
     } catch (err) {
         window.hideLoading()
@@ -97,7 +127,7 @@ window.handleSignup = async function() {
     const name = document.getElementById('fullName').value
     const email = document.getElementById('signupEmail').value
     const password = document.getElementById('signupPassword').value
-    const role = document.getElementById('signupRole').value
+    const role = 'director'
     const errorEl = document.getElementById('signupError')
     
     if (!name || !email || !password) {

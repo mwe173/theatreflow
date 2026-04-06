@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Theatre Manager - Dashboard</title>
-  
+
   <!-- External Libraries -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script type="module" src="script.js"></script>
@@ -19,6 +19,7 @@
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="styles.css">
+  
   <style>
     /* Additional sidebar fixes */
     .sidebar-glass {
@@ -85,6 +86,7 @@
         display: none !important;
       }
     }
+    
   </style>
 </head>
 <body class="h-full font-body overflow-hidden">
@@ -231,22 +233,32 @@
       <div class="max-w-7xl mx-auto px-6 py-8">
         
         <!-- Welcome Header -->
-        <header class="mb-8">
-          <div class="flex justify-between items-center">
-            <div>
-              <h2 class="font-display text-3xl font-bold text-amber-100">Welcome back,</h2>
-              <p id="welcome-message" class="text-amber-200/70 text-lg">Ready for tonight's show?</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="px-4 py-2 rounded-full text-sm bg-amber-600/20 text-amber-200 border border-amber-600/30">
+<header class="mb-8">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="font-display text-3xl font-bold text-amber-100">Welcome back,</h2>
+            <p id="welcome-message" class="text-amber-200/70 text-lg">
+                <span id="currentShowDisplay">Loading show...</span>
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="px-4 py-2 rounded-full text-sm bg-amber-600/20 text-amber-200 border border-amber-600/30">
                 <i class="fas fa-calendar-alt mr-2"></i>Preview Week
-              </span>
-              <button class="w-10 h-10 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
+            </span>
+            <button class="w-10 h-10 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-200">
                 <i class="fas fa-bell"></i>
-              </button>
-            </div>
-          </div>
-        </header>
+            </button>
+        </div>
+    </div>
+</header>
+
+        <!-- Add this banner when no show is selected -->
+<div id="noShowBanner" class="hidden mb-4 p-3 bg-amber-600/20 border border-amber-600/30 rounded-lg text-center">
+    <i class="fas fa-exclamation-triangle text-amber-400 mr-2"></i>
+    <span class="text-amber-200">You haven't created a show yet. </span>
+    <a href="settings.html" class="text-amber-400 underline font-medium">Click here to create your first show</a>
+</div>
+        
 
         <!-- Mobile menu button -->
         <button id="mobileMenuBtn" class="mb-4 px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors items-center gap-2 hidden">
@@ -314,45 +326,45 @@
             </div>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="stat-card rounded-xl p-4">
-                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
-                  <i class="fas fa-user"></i>
-                  <span>CAST</span>
-                </div>
-                <p class="font-display text-3xl font-bold text-amber-100">24</p>
-                <p class="text-xs text-amber-200/40 mt-1 flex items-center">
-                  <i class="fas fa-arrow-up text-emerald-400 mr-1"></i>+2 this week
-                </p>
-              </div>
-              
-              <div class="stat-card rounded-xl p-4">
-                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
-                  <i class="fas fa-cog"></i>
-                  <span>CREW</span>
-                </div>
-                <p class="font-display text-3xl font-bold text-amber-100">12</p>
-                <p class="text-xs text-amber-200/40 mt-1">Full team</p>
-              </div>
-              
-              <div class="stat-card rounded-xl p-4">
-                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
-                  <i class="fas fa-clock"></i>
-                  <span>REHEARSALS</span>
-                </div>
-                <p class="font-display text-3xl font-bold text-amber-100">8</p>
-                <p class="text-xs text-amber-200/40 mt-1">This month</p>
-              </div>
-              
-              <div class="stat-card rounded-xl p-4">
-                <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
-                  <i class="fas fa-calendar-check"></i>
-                  <span>DAYS TO OPENING</span>
-                </div>
-                <p class="font-display text-3xl font-bold text-amber-100">5</p>
-                <p class="text-xs text-amber-200/40 mt-1">Jan 14, 2025</p>
-              </div>
-            </div>
+<div class="grid grid-cols-2 gap-4">
+    <div class="stat-card rounded-xl p-4">
+        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+            <i class="fas fa-user"></i>
+            <span>CAST</span>
+        </div>
+        <p id="castCount" class="font-display text-3xl font-bold text-amber-100">0</p>
+        <p class="text-xs text-amber-200/40 mt-1 flex items-center">
+            <i class="fas fa-users text-emerald-400 mr-1"></i>Main cast members
+        </p>
+    </div>
+    
+    <div class="stat-card rounded-xl p-4">
+        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+            <i class="fas fa-cog"></i>
+            <span>CREW</span>
+        </div>
+        <p id="crewCount" class="font-display text-3xl font-bold text-amber-100">0</p>
+        <p class="text-xs text-amber-200/40 mt-1">Crew members</p>
+    </div>
+    
+    <div class="stat-card rounded-xl p-4">
+        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+            <i class="fas fa-clock"></i>
+            <span>REHEARSALS</span>
+        </div>
+        <p id="rehearsalsCount" class="font-display text-3xl font-bold text-amber-100">0</p>
+        <p class="text-xs text-amber-200/40 mt-1">This month</p>
+    </div>
+    
+    <div class="stat-card rounded-xl p-4">
+        <div class="flex items-center gap-2 text-amber-200/50 text-xs uppercase mb-1">
+            <i class="fas fa-calendar-check"></i>
+            <span>DAYS TO OPENING</span>
+        </div>
+        <p id="daysToOpening" class="font-display text-3xl font-bold text-amber-100">—</p>
+        <p id="openingDate" class="text-xs text-amber-200/40 mt-1">No performance scheduled</p>
+    </div>
+</div>
           </div>
 
           <!-- RIGHT COLUMN - Compact Calendar -->
@@ -529,6 +541,45 @@
     checkAuth()
   </script>
 
+  <!-- Load current show name for welcome message -->
+<script type="module">
+    import { supabase } from './supabase.js'
+    
+    async function loadCurrentShowName() {
+        try {
+            const currentShowId = localStorage.getItem('currentShowId')
+            const welcomeSpan = document.getElementById('currentShowDisplay')
+            
+            if (!currentShowId) {
+                welcomeSpan.innerHTML = 'Ready for tonight\'s show? <a href="settings.html" class="text-amber-400 underline">Create a show</a>'
+                return
+            }
+            
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            
+            const { data: show, error } = await supabase
+                .from('shows')
+                .select('name')
+                .eq('id', currentShowId)
+                .eq('user_id', user.id)
+                .single()
+            
+            if (error || !show) {
+                welcomeSpan.textContent = 'Ready for tonight\'s show?'
+            } else {
+                welcomeSpan.innerHTML = `🎭 Currently working on: <span class="font-semibold text-amber-300">${show.name}</span>`
+            }
+        } catch (err) {
+            console.error('Error loading show name:', err)
+            const welcomeSpan = document.getElementById('currentShowDisplay')
+            if (welcomeSpan) welcomeSpan.textContent = 'Ready for tonight\'s show?'
+        }
+    }
+    
+    loadCurrentShowName()
+</script>
+
   <!-- User Menu Script -->
 <script type="module">
   import { auth, supabase } from './supabase.js'
@@ -643,17 +694,16 @@
   loadUserInfo()
 </script>
 
-<!-- Calendar initialization with Supabase -->
+<!-- Calendar initialization with Supabase - FIXED VERSION -->
 <script type="module">
     import { supabase } from './supabase.js'
     
-    console.log('Calendar script starting...')
+    console.log('Homepage Calendar script starting...')
     
     let currentDate = new Date()
-    let selectedDate = formatDateKey(new Date()) // Track selected date
+    let selectedDate = formatDateKey(new Date())
     let events = []
     
-    // Event colors mapping
     const eventColors = {
         'rehearsal': '#7c3aed',
         'meeting': '#059669',
@@ -663,42 +713,49 @@
         'audition': '#9333ea'
     }
     
-    // Format date key (YYYY-MM-DD)
     function formatDateKey(date) {
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     }
     
-    // Check if date is today
     function isToday(dateKey) {
         const today = new Date()
         const todayKey = formatDateKey(today)
         return dateKey === todayKey
     }
     
-    // Get days in month
     function getDaysInMonth(year, month) {
         return new Date(year, month + 1, 0).getDate()
     }
     
-    // Get first day of month
     function getFirstDayOfMonth(year, month) {
         return new Date(year, month, 1).getDay()
     }
     
-    // Load events from Supabase
     async function loadEvents() {
         console.log('Loading events from Supabase...')
         try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return []
+            
+            const currentShowId = localStorage.getItem('currentShowId')
+            if (!currentShowId) {
+                console.log('No show selected - returning empty events')
+                return []
+            }
+            
             const { data, error } = await supabase
                 .from('events')
                 .select('*')
+                .eq('user_id', user.id)
+                .eq('show_id', currentShowId)
+                .order('date')
             
             if (error) {
                 console.error('Supabase error loading events:', error)
                 return []
             }
             
-            console.log('Success! Loaded events:', data)
+            console.log(`Loaded ${data?.length || 0} events for current show: ${currentShowId}`)
             return data || []
         } catch (err) {
             console.error('Exception loading events:', err)
@@ -706,17 +763,13 @@
         }
     }
     
-    // Render calendar
     async function renderCalendar() {
-        console.log('Rendering calendar...')
+        console.log('Rendering homepage calendar...')
         const year = currentDate.getFullYear()
         const month = currentDate.getMonth()
         const daysInMonth = getDaysInMonth(year, month)
         const firstDay = getFirstDayOfMonth(year, month)
         
-        console.log(`Month: ${year}-${month+1}, Days: ${daysInMonth}, First day: ${firstDay}`)
-        
-        // Update month display
         const monthDisplay = document.getElementById('current-month')
         if (monthDisplay) {
             monthDisplay.textContent = currentDate.toLocaleDateString('en-US', { 
@@ -725,10 +778,7 @@
             })
         }
         
-        // Load events if not already loaded
-        if (events.length === 0) {
-            events = await loadEvents()
-        }
+        events = await loadEvents()
         
         const grid = document.getElementById('calendar-grid')
         if (!grid) {
@@ -738,14 +788,12 @@
         
         grid.innerHTML = ''
         
-        // Add empty cells for days before month starts
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div')
             emptyCell.className = 'aspect-square'
             grid.appendChild(emptyCell)
         }
         
-        // Add the actual days
         for (let day = 1; day <= daysInMonth; day++) {
             const dateKey = formatDateKey(new Date(year, month, day))
             const dayEvents = events.filter(e => e.date === dateKey)
@@ -753,8 +801,6 @@
             const isTodayFlag = isToday(dateKey)
             
             const dayCell = document.createElement('div')
-            
-            // Build classes based on state
             let cellClasses = 'aspect-square flex flex-col items-center justify-center rounded-md cursor-pointer transition-all text-sm'
             
             if (isSelected) {
@@ -763,7 +809,6 @@
                 cellClasses += ' bg-amber-600/10 hover:bg-amber-600/20 text-amber-100'
             }
             
-            // Add today indicator (but don't override selected style)
             if (isTodayFlag && !isSelected) {
                 cellClasses += ' ring-2 ring-amber-400'
             }
@@ -772,17 +817,14 @@
             dayCell.setAttribute('data-date', dateKey)
             dayCell.onclick = () => selectDay(dateKey)
             
-            // Day number with appropriate color
             const dayNumber = document.createElement('span')
             dayNumber.className = `text-sm ${isSelected ? 'text-white' : 'text-amber-100'}`
             dayNumber.textContent = day
             dayCell.appendChild(dayNumber)
             
-            // Event indicators
             if (dayEvents.length > 0) {
                 const dotsContainer = document.createElement('div')
                 dotsContainer.className = 'flex gap-0.5 mt-0.5'
-                
                 const uniqueTypes = [...new Set(dayEvents.map(e => e.type))]
                 uniqueTypes.slice(0, 3).forEach(type => {
                     const dot = document.createElement('span')
@@ -790,23 +832,20 @@
                     dot.style.backgroundColor = eventColors[type] || '#94a3b8'
                     dotsContainer.appendChild(dot)
                 })
-                
                 dayCell.appendChild(dotsContainer)
             }
             
             grid.appendChild(dayCell)
         }
         
-        console.log('Calendar rendered, total cells:', grid.children.length)
         updateStats()
         updateTodayPreview()
     }
     
-    // Select a day
     async function selectDay(dateKey) {
         console.log('Day selected:', dateKey)
         selectedDate = dateKey
-        await renderCalendar() // Re-render to update selected state
+        await renderCalendar()
         
         const dayView = document.getElementById('day-view')
         const dayTitle = document.getElementById('day-view-title')
@@ -814,7 +853,6 @@
         
         if (!dayView || !dayTitle || !dayEventsContainer) return
         
-        // Format display date
         const [year, month, day] = dateKey.split('-').map(Number)
         const date = new Date(year, month - 1, day)
         dayTitle.textContent = date.toLocaleDateString('en-US', { 
@@ -847,7 +885,6 @@
         dayView.classList.remove('hidden')
     }
     
-    // Update stats
     function updateStats() {
         const today = new Date()
         const currentMonth = today.getMonth()
@@ -871,7 +908,6 @@
         if (upcomingCountEl) upcomingCountEl.textContent = upcomingEvents
     }
     
-    // Update today's preview
     function updateTodayPreview() {
         const previewEl = document.getElementById('upcoming-events-preview')
         if (!previewEl) return
@@ -908,147 +944,165 @@
         }
     }
     
-    // Change month
     function changeMonth(delta) {
         currentDate.setMonth(currentDate.getMonth() + delta)
         renderCalendar()
     }
     
-    // Initialize calendar
     async function initCalendar() {
-        console.log('Initializing calendar...')
+        console.log('Initializing homepage calendar...')
         await renderCalendar()
-        
-        // Select today's date by default
         await selectDay(formatDateKey(new Date()))
         
-        // Set up month navigation
         const prevBtn = document.getElementById('prev-month')
         const nextBtn = document.getElementById('next-month')
         
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => changeMonth(-1))
-            console.log('Prev button listener added')
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => changeMonth(1))
-            console.log('Next button listener added')
-        }
+        if (prevBtn) prevBtn.addEventListener('click', () => changeMonth(-1))
+        if (nextBtn) nextBtn.addEventListener('click', () => changeMonth(1))
     }
     
-    // Start calendar
     initCalendar().catch(err => {
-        console.error('Calendar initialization failed:', err)
+        console.error('Homepage calendar initialization failed:', err)
     })
 </script>
 
-<!-- Dynamic Stats from Supabase -->
+// Dynamic Stats from Supabase
 <script type="module">
     import { supabase } from './supabase.js'
     
+    // Check for shows and show/hide banner
+    async function checkForShows() {
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            
+            const currentShowId = localStorage.getItem('currentShowId')
+            const banner = document.getElementById('noShowBanner')
+            
+            if (!currentShowId) {
+                const { data: shows } = await supabase
+                    .from('shows')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .limit(1)
+                
+                if (!shows || shows.length === 0) {
+                    if (banner) banner.classList.remove('hidden')
+                }
+            }
+        } catch (err) {
+            console.error('Error checking for shows:', err)
+        }
+    }
+
     async function loadDashboardStats() {
         try {
-            console.log('Loading dashboard stats...')
+            console.log('Loading dashboard stats...');
             
-            // Get students count
-            const { count: studentCount, error: studentError } = await supabase
-                .from('students')
-                .select('*', { count: 'exact', head: true })
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
             
-            if (studentError) {
-                console.error('Error loading students:', studentError)
+            const currentShowId = localStorage.getItem('currentShowId');
+            if (!currentShowId) {
+                console.log('No show selected');
+                // Set default values when no show is selected
+                document.getElementById('castCount').textContent = '0';
+                document.getElementById('crewCount').textContent = '0';
+                document.getElementById('rehearsalsCount').textContent = '0';
+                document.getElementById('daysToOpening').textContent = '—';
+                document.getElementById('openingDate').textContent = 'Create a show in Settings';
+                return;
             }
             
-            // Get students with roles
+            // Get students with roles for current show
             const { data: students, error: rolesError } = await supabase
                 .from('students')
                 .select('roles')
+                .eq('user_id', user.id)
+                .eq('show_id', currentShowId);
             
             if (rolesError) {
-                console.error('Error loading roles:', rolesError)
+                console.error('Error loading roles:', rolesError);
             }
             
             // Calculate role counts
-            let mainCount = 0
-            let crewCount = 0
+            let mainCount = 0;
+            let crewCount = 0;
             
             if (students) {
                 students.forEach(student => {
                     if (student.roles && Array.isArray(student.roles)) {
-                        if (student.roles.includes('main')) mainCount++
-                        if (student.roles.includes('crew')) crewCount++
+                        if (student.roles.includes('main')) mainCount++;
+                        if (student.roles.includes('crew')) crewCount++;
                     }
-                })
+                });
             }
             
-            // Get events count for this month
-            const today = new Date()
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+            // Get events count for this month for current show
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
             
-            const firstDayStr = firstDay.toISOString().split('T')[0]
-            const lastDayStr = lastDay.toISOString().split('T')[0]
+            const firstDayStr = firstDay.toISOString().split('T')[0];
+            const lastDayStr = lastDay.toISOString().split('T')[0];
             
             const { count: eventCount, error: eventError } = await supabase
                 .from('events')
                 .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id)
+                .eq('show_id', currentShowId)
                 .gte('date', firstDayStr)
-                .lte('date', lastDayStr)
+                .lte('date', lastDayStr);
             
             if (eventError) {
-                console.error('Error loading events:', eventError)
+                console.error('Error loading events:', eventError);
             }
             
-            // Get days to opening (you might need to calculate this differently)
-            // For now, let's find the next performance
+            // Get days to opening (next performance for current show)
             const { data: nextPerformance, error: perfError } = await supabase
                 .from('events')
                 .select('date')
                 .eq('type', 'performance')
+                .eq('user_id', user.id)
+                .eq('show_id', currentShowId)
                 .gte('date', today.toISOString().split('T')[0])
                 .order('date', { ascending: true })
-                .limit(1)
+                .limit(1);
             
-            let daysToOpening = 'TBD'
+            let daysToOpening = '—';
+            let openingDateText = 'No performance scheduled';
+            
             if (nextPerformance && nextPerformance.length > 0) {
-                const performanceDate = new Date(nextPerformance[0].date)
-                const diffTime = performanceDate - today
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-                daysToOpening = diffDays
+                const performanceDate = new Date(nextPerformance[0].date);
+                const diffTime = performanceDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                daysToOpening = diffDays;
+                openingDateText = performanceDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             }
             
-            // Update the DOM
-            const castEl = document.querySelector('.stat-card:first-child .font-display')
-            const crewEl = document.querySelector('.stat-card:nth-child(2) .font-display')
-            const rehearsalsEl = document.querySelector('.stat-card:nth-child(3) .font-display')
-            const daysEl = document.querySelector('.stat-card:last-child .font-display')
+            // Update the DOM with new IDs
+            const castEl = document.getElementById('castCount');
+            const crewEl = document.getElementById('crewCount');
+            const rehearsalsEl = document.getElementById('rehearsalsCount');
+            const daysEl = document.getElementById('daysToOpening');
+            const openingDateEl = document.getElementById('openingDate');
             
-            if (castEl) castEl.textContent = mainCount || 0
-            if (crewEl) crewEl.textContent = crewCount || 0
-            if (rehearsalsEl) rehearsalsEl.textContent = eventCount || 0
+            if (castEl) castEl.textContent = mainCount || 0;
+            if (crewEl) crewEl.textContent = crewCount || 0;
+            if (rehearsalsEl) rehearsalsEl.textContent = eventCount || 0;
+            if (daysEl) daysEl.textContent = daysToOpening;
+            if (openingDateEl) openingDateEl.textContent = openingDateText;
             
-            if (daysEl) {
-                daysEl.textContent = daysToOpening
-                // Update the subtitle date if you want
-                const dateEl = document.querySelector('.stat-card:last-child .text-xs.text-amber-200\\/40')
-                if (dateEl && nextPerformance && nextPerformance[0]) {
-                    const date = new Date(nextPerformance[0].date)
-                    dateEl.textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                }
-            }
-            
-            console.log('Stats updated:', { mainCount, crewCount, eventCount, daysToOpening })
+            console.log('Stats updated:', { mainCount, crewCount, eventCount, daysToOpening });
             
         } catch (err) {
-            console.error('Error loading dashboard stats:', err)
+            console.error('Error loading dashboard stats:', err);
         }
     }
     
     // Load stats when page loads
-    loadDashboardStats()
-    
-    // Optional: Refresh stats every 30 seconds
-    // setInterval(loadDashboardStats, 30000)
+    loadDashboardStats();
+    checkForShows();
 </script>
 
 

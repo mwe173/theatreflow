@@ -39,37 +39,29 @@
             </div>
             
             <!-- Signup Form (hidden initially) -->
-            <div id="signupForm" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-gray-300 text-sm mb-1">Full Name</label>
-                    <input type="text" id="fullName" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
-                </div>
-                <div>
-                    <label class="block text-gray-300 text-sm mb-1">Email</label>
-                    <input type="email" id="signupEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
-                </div>
-                <div>
-                    <label class="block text-gray-300 text-sm mb-1">Password</label>
-                    <input type="password" id="signupPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
-                </div>
-                <div>
-                    <label class="block text-gray-300 text-sm mb-1">Role</label>
-                    <select id="signupRole" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
-                        <option value="cast">Cast Member</option>
-                        <option value="crew">Crew</option>
-                        <option value="stage_manager">Stage Manager</option>
-                        <option value="director">Director</option>
-                    </select>
-                </div>
-                <div id="signupError" class="text-red-400 text-sm hidden bg-red-400/10 p-2 rounded-lg"></div>
-                <button onclick="handleSignup()" class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg">
-                    Create Account
-                </button>
-                <p class="text-center text-gray-400 text-sm">
-                    Already have an account? 
-                    <button onclick="showLogin()" class="text-amber-400 hover:underline">Sign in</button>
-                </p>
-            </div>
+<div id="signupForm" class="space-y-4 hidden">
+    <div>
+        <label class="block text-gray-300 text-sm mb-1">Full Name</label>
+        <input type="text" id="fullName" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+    </div>
+    <div>
+        <label class="block text-gray-300 text-sm mb-1">Email</label>
+        <input type="email" id="signupEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+    </div>
+    <div>
+        <label class="block text-gray-300 text-sm mb-1">Password</label>
+        <input type="password" id="signupPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+    </div>
+    <!-- Role field removed - defaulting to director -->
+    <div id="signupError" class="text-red-400 text-sm hidden bg-red-400/10 p-2 rounded-lg"></div>
+    <button onclick="handleSignup()" class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg">
+        Create Account
+    </button>
+    <p class="text-center text-gray-400 text-sm">
+        Already have an account? 
+        <button onclick="showLogin()" class="text-amber-400 hover:underline">Sign in</button>
+    </p>
+</div>
         </div>
     </div>
 

@@ -676,15 +676,39 @@ function setupEventListeners() {
         });
     }
     
-    // Reset button
-    const resetBtn = document.getElementById('resetAttendanceBtn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', async () => {
-            if (confirm('Reset all changes for this date?')) {
-                await attendanceManager.selectDate(attendanceManager.selectedDate);
+    // Reset button - FIXED to actually reset attendance
+const resetBtn = document.getElementById('resetAttendanceBtn');
+if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+        if (confirm('Reset all changes for this date? This will reload the original attendance data from the database.')) {
+            // Show loading indicator
+            const listEl = document.getElementById('attendanceList');
+            if (listEl) {
+                listEl.innerHTML = `
+                    <div class="text-center py-12 text-amber-200/50">
+                        <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                        <p>Resetting attendance...</p>
+                    </div>
+                `;
             }
-        });
-    }
+            
+            // Clear the cached attendance for this date
+            delete attendanceManager.attendanceRecords[attendanceManager.selectedDate];
+            
+            // Reload attendance from Supabase
+            attendanceManager.attendanceRecords[attendanceManager.selectedDate] = 
+                await attendanceManager.loadAttendanceFromSupabase(attendanceManager.selectedDate);
+            
+            // Re-render the list and update stats
+            attendanceManager.renderAttendanceList();
+            attendanceManager.updateStats();
+            attendanceManager.updateLastSaved();
+            
+            // Show success message
+            showToast('Attendance has been reset to saved values.', 'success');
+        }
+    });
+}
     
     // Quick attendance modal
     const quickBtn = document.getElementById('quickAttendanceBtn');
@@ -807,3 +831,21 @@ async function initializeAttendanceWithUser() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeAttendanceWithUser);
+
+// Simple toast function for attendance page
+function showToast(message, type = 'info') {
+    // Check if global showToast exists
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, type);
+        return;
+    }
+    
+    // Fallback toast
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white z-50 ${
+        type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+    }`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}

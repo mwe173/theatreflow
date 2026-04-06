@@ -5,82 +5,85 @@ class CalendarManager {
     constructor() {
         this.currentDate = new Date();
         this.selectedDate = this.formatDateKey(this.currentDate);
-        this.events = {};  // Will be loaded from Supabase
+        this.events = {};
         this.currentFilter = 'all';
         this.searchTerm = '';
         this.eventTypeFilter = 'all';
         
-this.eventColors = {
-    rehearsal: '#7c3aed',
-    tech: '#0891b2',
-    performance: '#dc2626',
-    workshop: '#d97706',
-    other: '#6b7280'
-};
-
-this.eventIcons = {
-    rehearsal: 'fa-theater-masks',
-    tech: 'fa-cog',
-    performance: 'fa-ticket-alt',
-    workshop: 'fa-chalkboard-teacher',
-    other: 'fa-calendar-alt'
-};
+        // Event colors - distinct colors for each type
+        this.eventColors = {
+            rehearsal: '#7c3aed',   // Purple
+            tech: '#0891b2',         // Cyan/Teal
+            performance: '#dc2626',  // Red
+            workshop: '#d97706',     // Orange/Amber
+            other: '#6b806b'         // Gray
+        };
         
+        // Event icons
         this.eventIcons = {
             rehearsal: 'fa-theater-masks',
-            meeting: 'fa-users',
-            performance: 'fa-ticket-alt',
             tech: 'fa-cog',
+            performance: 'fa-ticket-alt',
             workshop: 'fa-chalkboard-teacher',
-            audition: 'fa-microphone-alt'
+            other: 'fa-calendar-alt'
         };
+    }
+
+    // ===== HELPER METHOD - SAFE DATE PARSING =====
+    // Parse date string YYYY-MM-DD without timezone issues
+    parseDateSafely(dateKey) {
+        const [year, month, day] = dateKey.split('-').map(Number);
+        return new Date(year, month - 1, day);
     }
 
     // ===== SUPABASE FUNCTIONS =====
 
-    // Load events from Supabase
     async loadEventsFromSupabase() {
-            try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return {};
-        
-        const currentShowId = localStorage.getItem('currentShowId');
-        if (!currentShowId) return {};
-        
-        const { data, error } = await supabase
-            .from('events')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('show_id', currentShowId)  // ← ADD THIS LINE
-            .order('date');
-        
-        if (error) throw error;
-        
-        // Convert to format expected by calendar
-        const eventsByDate = {};
-        data?.forEach(event => {
-            if (!eventsByDate[event.date]) eventsByDate[event.date] = [];
-            eventsByDate[event.date].push(event);
-        });
-        
-        return eventsByDate;
-    } catch (error) {
-        console.error('Error loading events:', error);
-        return {};
-    }
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return {};
+            
+            const currentShowId = localStorage.getItem('currentShowId');
+            if (!currentShowId) {
+                console.log('No show selected - returning empty events');
+                return {};
+            }
+            
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('show_id', currentShowId)
+                .order('date');
+            
+            if (error) throw error;
+            
+            const eventsByDate = {};
+            data?.forEach(event => {
+                if (!eventsByDate[event.date]) eventsByDate[event.date] = [];
+                eventsByDate[event.date].push(event);
+            });
+            
+            console.log(`Loaded ${data?.length || 0} events for show ${currentShowId}`);
+            return eventsByDate;
+        } catch (error) {
+            console.error('Error loading events:', error);
+            return {};
+        }
     }
 
-    // Save event to Supabase
     async saveEventToSupabase(eventData) {
         try {
-            // Get current user
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
-                console.error('No user logged in');
                 return { success: false, error: 'Not authenticated' };
             }
             
-            // Prepare event data
+            const currentShowId = localStorage.getItem('currentShowId');
+            if (!currentShowId) {
+                return { success: false, error: 'No show selected. Please create or select a show in Settings.' };
+            }
+            
             const eventRecord = {
                 title: eventData.title,
                 type: eventData.type,
@@ -88,12 +91,12 @@ this.eventIcons = {
                 time: eventData.time,
                 location: eventData.location || '',
                 description: eventData.description || '',
-                user_id: user.id
+                user_id: user.id,
+                show_id: currentShowId
             };
             
             let result;
             
-            // If event has an id, update existing record
             if (eventData.id) {
                 result = await supabase
                     .from('events')
@@ -102,7 +105,6 @@ this.eventIcons = {
                     .eq('user_id', user.id)
                     .select();
             } else {
-                // Create new record
                 result = await supabase
                     .from('events')
                     .insert([eventRecord])
@@ -118,7 +120,6 @@ this.eventIcons = {
         }
     }
 
-    // Delete event from Supabase
     async deleteEventFromSupabase(eventId) {
         try {
             const { data: { user } } = await supabase.auth.getUser();
@@ -140,21 +141,15 @@ this.eventIcons = {
         }
     }
 
-    // Initialize calendar
     async initialize() {
         console.log('Initializing CalendarManager...');
-        
-        // Load events from Supabase
         this.events = await this.loadEventsFromSupabase();
-        
-        // Render components
         this.renderMiniCalendar();
         this.renderEventList();
-        
         console.log('CalendarManager initialized');
     }
 
-    // ===== EXISTING METHODS (with modifications) =====
+    // ===== HELPER METHODS =====
 
     formatDateKey(date) {
         if (!(date instanceof Date)) {
@@ -182,10 +177,7 @@ this.eventIcons = {
     formatShortDate(dateKey) {
         const { year, month, day } = this.parseDateKey(dateKey);
         const date = new Date(year, month, day);
-        return date.toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric' 
-        });
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
     getDaysInMonth(year, month) {
@@ -197,9 +189,8 @@ this.eventIcons = {
     }
 
     isToday(dateKey) {
-        const today = new Date();
-        const todayKey = this.formatDateKey(today);
-        return dateKey === todayKey;
+        const today = this.formatDateKey(new Date());
+        return dateKey === today;
     }
 
     // Render mini calendar
@@ -209,7 +200,6 @@ this.eventIcons = {
         const daysInMonth = this.getDaysInMonth(year, month);
         const firstDay = this.getFirstDayOfMonth(year, month);
         
-        // Update month/year display
         const monthYearEl = document.getElementById('miniMonthYear');
         if (monthYearEl) {
             monthYearEl.textContent = this.currentDate.toLocaleDateString('en-US', { 
@@ -226,7 +216,6 @@ this.eventIcons = {
         
         calendarEl.innerHTML = '';
         
-        // Add empty cells for days before month starts
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div');
             emptyCell.className = 'mini-calendar-day empty';
@@ -234,10 +223,10 @@ this.eventIcons = {
             calendarEl.appendChild(emptyCell);
         }
         
-        // Add days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             const dateKey = this.formatDateKey(new Date(year, month, day));
-            const hasEvents = this.events[dateKey] && this.events[dateKey].length > 0;
+            const dayEvents = this.events[dateKey] || [];
+            const hasEvents = dayEvents.length > 0;
             const isSelected = dateKey === this.selectedDate;
             const isToday = this.isToday(dateKey);
             
@@ -252,27 +241,36 @@ this.eventIcons = {
             dayCell.setAttribute('data-date', dateKey);
             dayCell.addEventListener('click', () => this.selectDate(dateKey));
             
+            // Add event type dots with correct colors - positioned below the date
+            if (hasEvents && dayEvents.length > 0) {
+                const dotsContainer = document.createElement('div');
+                dotsContainer.className = 'event-dots';
+                
+                // Get unique event types for this day
+                const uniqueTypes = [...new Set(dayEvents.map(e => e.type))];
+                uniqueTypes.slice(0, 3).forEach(type => {
+                    const dot = document.createElement('span');
+                    dot.className = 'event-dot';
+                    dot.style.backgroundColor = this.eventColors[type] || '#94a3b8';
+                    dotsContainer.appendChild(dot);
+                });
+                
+                dayCell.appendChild(dotsContainer);
+            }
+            
             calendarEl.appendChild(dayCell);
         }
         
-        console.log('Mini calendar rendered for', monthYearEl?.textContent);
+        console.log('Mini calendar rendered');
     }
 
-    // Select a date
     selectDate(dateKey) {
         this.selectedDate = dateKey;
-        
-        // Update the current month to show the selected date's month
         const { year, month } = this.parseDateKey(dateKey);
         this.currentDate = new Date(year, month, 1);
-        
-        // Re-render mini calendar to show the correct month
         this.renderMiniCalendar();
-        
-        // Re-render event list with the selected date highlighted
         this.renderEventList();
         
-        // Scroll to the selected date group
         setTimeout(() => {
             const dateGroup = document.querySelector(`[data-date-group="${dateKey}"]`);
             if (dateGroup) {
@@ -285,7 +283,6 @@ this.eventIcons = {
         }, 100);
     }
 
-    // Get all events as a flat array with date info
     getAllEvents() {
         const allEvents = [];
         for (const [dateKey, events] of Object.entries(this.events)) {
@@ -301,10 +298,8 @@ this.eventIcons = {
         return allEvents;
     }
 
-    // Filter events based on current filters
     filterEvents(events) {
         return events.filter(event => {
-            // Search filter
             if (this.searchTerm) {
                 const searchLower = this.searchTerm.toLowerCase();
                 const matchesSearch = event.title.toLowerCase().includes(searchLower) ||
@@ -313,16 +308,14 @@ this.eventIcons = {
                 if (!matchesSearch) return false;
             }
             
-            // Event type filter
             if (this.eventTypeFilter !== 'all' && event.type !== this.eventTypeFilter) {
                 return false;
             }
             
-            // Date-based filters
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const eventDate = new Date(event.dateKey);
-            eventDate.setHours(0, 0, 0, 0);
+            // Use safe date parsing
+            const eventDate = this.parseDateSafely(event.dateKey);
             
             switch (this.currentFilter) {
                 case 'upcoming':
@@ -342,7 +335,6 @@ this.eventIcons = {
         });
     }
 
-    // Group events by date
     groupEventsByDate(events) {
         const grouped = {};
         events.forEach(event => {
@@ -360,35 +352,51 @@ this.eventIcons = {
             }, {});
     }
 
-    // Render event list
     renderEventList() {
         const eventListEl = document.getElementById('eventList');
         const eventCountEl = document.getElementById('eventCount');
         const totalEventsEl = document.getElementById('totalEventsCount');
         const monthEventsEl = document.getElementById('monthEventsCount');
         
-        if (!eventListEl) {
-            console.error('Event list element not found');
-            return;
-        }
+        if (!eventListEl) return;
         
         const allEvents = this.getAllEvents();
         const filteredEvents = this.filterEvents(allEvents);
-        const groupedEvents = this.groupEventsByDate(filteredEvents);
+        
+        // Get today's date - set to start of day for proper comparison
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const pastEvents = [];
+        const currentEvents = [];
+        const upcomingEvents = [];
+        
+        filteredEvents.forEach(event => {
+            // Use safe date parsing to avoid timezone issues
+            const eventDate = this.parseDateSafely(event.dateKey);
+            
+            if (eventDate < today) {
+                pastEvents.push(event);
+            } else if (eventDate.getTime() === today.getTime()) {
+                currentEvents.push(event);
+            } else {
+                upcomingEvents.push(event);
+            }
+        });
+        
+        // Sort events
+        pastEvents.sort((a, b) => this.parseDateSafely(b.dateKey) - this.parseDateSafely(a.dateKey));
+        upcomingEvents.sort((a, b) => this.parseDateSafely(a.dateKey) - this.parseDateSafely(b.dateKey));
+        currentEvents.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
         
         // Update counts
-        if (eventCountEl) {
-            eventCountEl.textContent = `${filteredEvents.length} events`;
-        }
-        
-        if (totalEventsEl) {
-            totalEventsEl.textContent = allEvents.length;
-        }
+        if (eventCountEl) eventCountEl.textContent = `${filteredEvents.length} events`;
+        if (totalEventsEl) totalEventsEl.textContent = allEvents.length;
         
         if (monthEventsEl) {
             const currentMonth = this.currentDate.getMonth();
             const monthEvents = allEvents.filter(e => {
-                const eventDate = new Date(e.dateKey);
+                const eventDate = this.parseDateSafely(e.dateKey);
                 return eventDate.getMonth() === currentMonth;
             }).length;
             monthEventsEl.textContent = monthEvents;
@@ -405,8 +413,6 @@ this.eventIcons = {
                     </button>
                 </div>
             `;
-            
-            // Add event listener to empty state button
             const emptyStateBtn = document.getElementById('emptyStateAddEventBtn');
             if (emptyStateBtn) {
                 emptyStateBtn.addEventListener('click', () => {
@@ -418,77 +424,157 @@ this.eventIcons = {
         
         let html = '';
         
-        Object.entries(groupedEvents).forEach(([dateKey, events]) => {
-            const isSelected = dateKey === this.selectedDate;
-            const displayDate = this.formatDisplayDate(dateKey);
+        // Helper function to render a section
+        const renderSection = (title, events, icon, bgColor, borderColor, showToggle = true) => {
+            if (events.length === 0) return '';
             
-            html += `
-                <div class="date-group ${isSelected ? 'selected-date-group' : ''}" data-date-group="${dateKey}">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-display font-semibold ${isSelected ? 'text-amber-400' : 'text-amber-100'}">
-                            ${displayDate}
-                            ${isSelected ? '<span class="ml-2 text-xs bg-amber-600/30 px-2 py-0.5 rounded-full">Selected</span>' : ''}
-                        </h3>
-                        <span class="text-xs text-amber-200/50">${events.length} event${events.length > 1 ? 's' : ''}</span>
+            const sectionId = `section-${title.replace(/\s/g, '')}`;
+            
+            return `
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3 cursor-pointer section-header" data-section="${sectionId}">
+                        <div class="flex items-center gap-2">
+                            <i class="fas ${icon} ${bgColor}"></i>
+                            <h3 class="font-display font-semibold text-amber-100">${title}</h3>
+                            <span class="text-xs text-amber-200/50 ml-1">(${events.length})</span>
+                        </div>
+                        ${showToggle ? `<i class="fas fa-chevron-up text-amber-200/50 text-sm section-toggle"></i>` : ''}
                     </div>
-                    
-                    <div class="space-y-2">
+                    <div id="${sectionId}" class="space-y-3 pl-2 border-l-2 ${borderColor}">
                         ${events.map(event => this.renderEventItem(event)).join('')}
                     </div>
                 </div>
             `;
-        });
+        };
+        
+        // Build the HTML with sections
+        html += renderSection('Current Events', currentEvents, 'fa-calendar-day', 'text-blue-400', 'border-blue-500/50', currentEvents.length > 0);
+        html += renderSection('Upcoming Events', upcomingEvents, 'fa-calendar-week', 'text-green-400', 'border-green-500/50', true);
+        html += renderSection('Past Events', pastEvents, 'fa-calendar-check', 'text-gray-400', 'border-gray-500/50', true);
         
         eventListEl.innerHTML = html;
+        
+        // Add toggle functionality for sections
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const sectionId = header.dataset.section;
+                const content = document.getElementById(sectionId);
+                const toggleIcon = header.querySelector('.section-toggle');
+                
+                if (content) {
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        if (toggleIcon) {
+                            toggleIcon.classList.remove('fa-chevron-down');
+                            toggleIcon.classList.add('fa-chevron-up');
+                        }
+                    } else {
+                        content.style.display = 'none';
+                        if (toggleIcon) {
+                            toggleIcon.classList.remove('fa-chevron-up');
+                            toggleIcon.classList.add('fa-chevron-down');
+                        }
+                    }
+                }
+            });
+        });
     }
 
     renderEventItem(event) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const eventDate = new Date(event.dateKey);
-    eventDate.setHours(0, 0, 0, 0);
-    
-    const isPast = eventDate < today;
-    const isToday = eventDate.getTime() === today.getTime();
-    
-    // Format the time for display
-    let displayTime = event.time;
-    // If time contains a dash (start-end), you might want to format both parts
-    if (event.time && event.time.includes(' - ')) {
-        const parts = event.time.split(' - ');
-        const startFormatted = this.formatTime(parts[0]);
-        const endFormatted = this.formatTime(parts[1]);
-        displayTime = `${startFormatted} - ${endFormatted}`;
-    } else if (event.time) {
-        displayTime = this.formatTime(event.time);
-    }
-    
-    return `
-        <div class="event-list-item p-4 rounded-xl cursor-pointer ${isPast ? 'past' : isToday ? 'ongoing' : 'upcoming'}"
-             onclick="calendarManager.viewEvent('${event.dateKey}', ${event.id})">
-            <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" 
-                     style="background: ${this.eventColors[event.type]}20;">
-                    <i class="fas ${this.eventIcons[event.type] || 'fa-calendar-alt'}" style="color: ${this.eventColors[event.type]};"></i>
-                </div>
-                
-                <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-amber-100 mb-1">${event.title}</h4>
-                    
-                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-amber-200/70">
-                        <span><i class="far fa-clock mr-1"></i>${displayTime}</span>
-                        ${event.location ? `<span><i class="fas fa-map-marker-alt mr-1"></i>${event.location}</span>` : ''}
+        // Get today's date at midnight for comparison
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Use safe date parsing
+        const eventDate = this.parseDateSafely(event.dateKey);
+        
+        // Determine if event is past, today, or future based on DATE only
+        const isPast = eventDate < today;
+        const isToday = eventDate.getTime() === today.getTime();
+        
+        let displayTime = event.time;
+        if (event.time && event.time.includes(' - ')) {
+            const parts = event.time.split(' - ');
+            displayTime = `${this.formatTime(parts[0])} - ${this.formatTime(parts[1])}`;
+        } else if (event.time) {
+            displayTime = this.formatTime(event.time);
+        }
+        
+        const color = this.eventColors[event.type] || '#6b7280';
+        const shortDate = this.formatShortDate(event.dateKey);
+        
+        // Set styling based on event date
+        let borderStyle = '';
+        let bgColor = '';
+        let titleClass = '';
+        let timeClass = '';
+        let opacityClass = '';
+        
+        if (isPast) {
+            // Past events - faded
+            borderStyle = 'border: 1px solid #334155;';
+            bgColor = '#1e293b';
+            titleClass = 'text-gray-400';
+            timeClass = 'text-gray-500';
+            opacityClass = 'opacity-70 hover:opacity-100';
+        } else if (isToday) {
+            // Today's events - highlighted
+            borderStyle = 'border: 1px solid rgba(245, 158, 11, 0.3); border-left: 4px solid #f9c66e;';
+            bgColor = 'rgba(245, 158, 11, 0.1)';
+            titleClass = 'text-amber-100';
+            timeClass = 'text-amber-200/70';
+            opacityClass = '';
+        } else {
+            // Future events - normal
+            borderStyle = 'border: 1px solid #334155;';
+            bgColor = '#1e293b';
+            titleClass = 'text-amber-100';
+            timeClass = 'text-amber-200/70';
+            opacityClass = '';
+        }
+        
+        return `
+            <div class="event-list-item p-4 rounded-xl cursor-pointer transition-all ${opacityClass}" 
+                 style="background: ${bgColor}; ${borderStyle}"
+                 onclick="calendarManager.viewEvent('${event.dateKey}', ${event.id})">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" 
+                         style="background: ${color}20;">
+                        <i class="fas ${this.eventIcons[event.type] || 'fa-calendar-alt'}" style="color: ${color};"></i>
                     </div>
                     
-                    <span class="inline-block mt-2 text-xs font-medium px-2 py-1 rounded-full" 
-                          style="background: ${this.eventColors[event.type]}20; color: ${this.eventColors[event.type]};">
-                        ${this.capitalizeFirst(event.type)}
-                    </span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                            <h4 class="font-medium ${titleClass}">${this.escapeHtml(event.title)}</h4>
+                            <span class="text-xs ${timeClass}">
+                                <i class="far fa-calendar-alt mr-1"></i>${shortDate}
+                            </span>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs ${timeClass}">
+                            <span><i class="far fa-clock mr-1"></i>${displayTime}</span>
+                            ${event.location ? `<span><i class="fas fa-map-marker-alt mr-1"></i>${this.escapeHtml(event.location)}</span>` : ''}
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <span class="inline-block text-xs font-medium px-2 py-1 rounded-full" 
+                                  style="background: ${color}20; color: ${color};">
+                                ${this.capitalizeFirst(event.type)}
+                            </span>
+                            ${isToday ? '<span class="inline-block text-xs font-medium px-2 py-1 rounded-full bg-amber-500/20 text-amber-400">Today</span>' : ''}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
-}
+        `;
+    }
+
+    escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
     viewEvent(dateKey, eventId) {
         const event = this.events[dateKey]?.find(e => e.id === eventId);
@@ -497,44 +583,41 @@ this.eventIcons = {
         const modal = document.getElementById('viewEventModal');
         const titleEl = document.getElementById('viewEventTitle');
         const detailsEl = document.getElementById('viewEventDetails');
+        const color = this.eventColors[event.type] || '#6b7280';
         
         titleEl.textContent = event.title;
         
         detailsEl.innerHTML = `
             <div class="space-y-3">
-                <div class="flex items-center gap-3 p-3 rounded-lg" style="background: ${this.eventColors[event.type]}10;">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: ${this.eventColors[event.type]}20;">
-                        <i class="fas ${this.eventIcons[event.type]}" style="color: ${this.eventColors[event.type]};"></i>
+                <div class="flex items-center gap-3 p-3 rounded-lg" style="background: ${color}10;">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: ${color}20;">
+                        <i class="fas ${this.eventIcons[event.type] || 'fa-calendar-alt'}" style="color: ${color};"></i>
                     </div>
                     <div>
                         <span class="text-xs text-amber-200/50">Event Type</span>
                         <p class="text-amber-100 font-medium">${this.capitalizeFirst(event.type)}</p>
                     </div>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-3">
                     <div class="p-3 rounded-lg bg-amber-600/5">
                         <span class="text-xs text-amber-200/50">Date</span>
                         <p class="text-amber-100">${this.formatDisplayDate(dateKey)}</p>
                     </div>
-                    
                     <div class="p-3 rounded-lg bg-amber-600/5">
                         <span class="text-xs text-amber-200/50">Time</span>
                         <p class="text-amber-100">${event.time}</p>
                     </div>
                 </div>
-                
                 ${event.location ? `
                     <div class="p-3 rounded-lg bg-amber-600/5">
                         <span class="text-xs text-amber-200/50">Location</span>
-                        <p class="text-amber-100"><i class="fas fa-map-marker-alt mr-2 text-amber-400"></i>${event.location}</p>
+                        <p class="text-amber-100">${this.escapeHtml(event.location)}</p>
                     </div>
                 ` : ''}
-                
                 ${event.description ? `
                     <div class="p-3 rounded-lg bg-amber-600/5">
                         <span class="text-xs text-amber-200/50">Description</span>
-                        <p class="text-amber-100 text-sm mt-1">${event.description}</p>
+                        <p class="text-amber-100 text-sm mt-1">${this.escapeHtml(event.description)}</p>
                     </div>
                 ` : ''}
             </div>
@@ -552,22 +635,19 @@ this.eventIcons = {
     }
 
     formatTime(time24) {
-    if (!time24) return '';
-    const [hours, minutes] = time24.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:${minutes} ${ampm}`;
-}
+        if (!time24) return '';
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    }
 
-    // Add event (modified for Supabase)
     async addEvent(eventData) {
         console.log('Adding event:', eventData);
-        
         const result = await this.saveEventToSupabase(eventData);
         
         if (result.success) {
-            // Reload events from Supabase
             this.events = await this.loadEventsFromSupabase();
             this.renderMiniCalendar();
             this.renderEventList();
@@ -579,14 +659,11 @@ this.eventIcons = {
         }
     }
 
-    // Update event (modified for Supabase)
     async updateEvent(dateKey, eventId, eventData) {
         console.log('Updating event:', eventId, eventData);
-        
         const result = await this.saveEventToSupabase({ ...eventData, id: eventId, date: dateKey });
         
         if (result.success) {
-            // Reload events from Supabase
             this.events = await this.loadEventsFromSupabase();
             this.renderMiniCalendar();
             this.renderEventList();
@@ -598,7 +675,6 @@ this.eventIcons = {
         }
     }
 
-    // Delete event (modified for Supabase)
     async deleteEvent(dateKey, eventId) {
         console.log('Deleting event:', eventId);
         
@@ -607,7 +683,6 @@ this.eventIcons = {
         const result = await this.deleteEventFromSupabase(eventId);
         
         if (result.success) {
-            // Reload events from Supabase
             this.events = await this.loadEventsFromSupabase();
             this.renderMiniCalendar();
             this.renderEventList();
@@ -651,44 +726,30 @@ const calendarManager = new CalendarManager();
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('DOM loaded, initializing calendar page');
     
-    // Initialize sidebar from main script if available
     if (typeof initSidebar === 'function') {
         initSidebar();
     }
     
-    // Initialize calendar manager with Supabase data
     await calendarManager.initialize();
-    
-    // Set up event listeners
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    // Month navigation
     const prevBtn = document.getElementById('prevMonthMini');
     const nextBtn = document.getElementById('nextMonthMini');
     
     if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            calendarManager.changeMonth(-1);
-        });
+        prevBtn.addEventListener('click', () => calendarManager.changeMonth(-1));
     }
-    
     if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            calendarManager.changeMonth(1);
-        });
+        nextBtn.addEventListener('click', () => calendarManager.changeMonth(1));
     }
     
-    // Today button
     const todayBtn = document.getElementById('todayBtn');
     if (todayBtn) {
-        todayBtn.addEventListener('click', () => {
-            calendarManager.goToToday();
-        });
+        todayBtn.addEventListener('click', () => calendarManager.goToToday());
     }
     
-    // Search input
     const searchInput = document.getElementById('searchEvents');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -697,7 +758,6 @@ function setupEventListeners() {
         });
     }
     
-    // Filter buttons
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -708,7 +768,6 @@ function setupEventListeners() {
         });
     });
     
-    // Event type filter
     const typeFilter = document.getElementById('eventTypeFilter');
     if (typeFilter) {
         typeFilter.addEventListener('change', (e) => {
@@ -717,7 +776,7 @@ function setupEventListeners() {
         });
     }
     
-    // Add event modal
+    // Modal setup
     const openModalBtn = document.getElementById('openAddEventModal');
     const closeModalBtn = document.getElementById('closeEventModal');
     const cancelModalBtn = document.getElementById('cancelEventModal');
@@ -729,31 +788,28 @@ function setupEventListeners() {
             const dateInput = document.getElementById('eventDateInput');
             if (dateInput) {
                 const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                dateInput.value = `${year}-${month}-${day}`;
+                dateInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             }
             document.getElementById('eventId').value = '';
             document.getElementById('eventModalTitle').textContent = 'Add New Event';
             document.getElementById('submitEventBtn').textContent = 'Add Event';
-            eventForm.reset();
-            eventModal.classList.remove('hidden');
-            eventModal.classList.add('flex');
+            eventForm?.reset();
+            eventModal?.classList.remove('hidden');
+            eventModal?.classList.add('flex');
         });
     }
     
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
-            eventModal.classList.add('hidden');
-            eventModal.classList.remove('flex');
+            eventModal?.classList.add('hidden');
+            eventModal?.classList.remove('flex');
         });
     }
     
     if (cancelModalBtn) {
         cancelModalBtn.addEventListener('click', () => {
-            eventModal.classList.add('hidden');
-            eventModal.classList.remove('flex');
+            eventModal?.classList.add('hidden');
+            eventModal?.classList.remove('flex');
         });
     }
     
@@ -766,41 +822,38 @@ function setupEventListeners() {
         });
     }
     
-    // Event form submission (modified for Supabase)
     if (eventForm) {
-    eventForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const eventId = document.getElementById('eventId').value;
-        const dateKey = document.getElementById('eventDateInput').value;
-        const startTime = document.getElementById('eventStartTime').value;
-        const endTime = document.getElementById('eventEndTime').value;
-        
-        // Combine times for storage
-        const timeValue = endTime ? `${startTime} - ${endTime}` : startTime;
-        
-        const eventData = {
-            date: dateKey,
-            type: document.getElementById('eventType').value,
-            title: document.getElementById('eventTitle').value,
-            time: timeValue,  // Store combined time
-            location: document.getElementById('eventLocation').value,
-            description: document.getElementById('eventDescription').value
-        };
-        
-        let result;
-        if (eventId) {
-            result = await calendarManager.updateEvent(dateKey, parseInt(eventId), eventData);
-        } else {
-            result = await calendarManager.addEvent(eventData);
-        }
-        
-        if (result && result.success) {
-            eventModal.classList.add('hidden');
-            eventModal.classList.remove('flex');
-        }
-    });
-}
+        eventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const eventId = document.getElementById('eventId').value;
+            const dateKey = document.getElementById('eventDateInput').value;
+            const startTime = document.getElementById('eventStartTime')?.value;
+            const endTime = document.getElementById('eventEndTime')?.value;
+            const timeValue = endTime ? `${startTime} - ${endTime}` : startTime;
+            
+            const eventData = {
+                date: dateKey,
+                type: document.getElementById('eventType').value,
+                title: document.getElementById('eventTitle').value,
+                time: timeValue,
+                location: document.getElementById('eventLocation').value,
+                description: document.getElementById('eventDescription').value
+            };
+            
+            let result;
+            if (eventId) {
+                result = await calendarManager.updateEvent(dateKey, parseInt(eventId), eventData);
+            } else {
+                result = await calendarManager.addEvent(eventData);
+            }
+            
+            if (result && result.success) {
+                eventModal.classList.add('hidden');
+                eventModal.classList.remove('flex');
+            }
+        });
+    }
     
     // View modal close
     const closeViewModal = document.getElementById('closeViewModal');
@@ -808,8 +861,8 @@ function setupEventListeners() {
     
     if (closeViewModal) {
         closeViewModal.addEventListener('click', () => {
-            viewModal.classList.add('hidden');
-            viewModal.classList.remove('flex');
+            viewModal?.classList.add('hidden');
+            viewModal?.classList.remove('flex');
         });
     }
     
@@ -841,7 +894,11 @@ function setupEventListeners() {
             document.getElementById('eventDateInput').value = dateKey;
             document.getElementById('eventType').value = event.type;
             document.getElementById('eventTitle').value = event.title;
-            document.getElementById('eventTime').value = event.time;
+            
+            // Handle time field
+            const timeField = document.getElementById('eventTime');
+            if (timeField) timeField.value = event.time;
+            
             document.getElementById('eventLocation').value = event.location || '';
             document.getElementById('eventDescription').value = event.description || '';
             
@@ -860,21 +917,9 @@ function setupEventListeners() {
             const detailsEl = document.getElementById('viewEventDetails');
             const dateKey = detailsEl.dataset.datekey;
             const eventId = parseInt(detailsEl.dataset.eventid);
-            
             await calendarManager.deleteEvent(dateKey, eventId);
         });
     }
 }
 
-// Make calendarManager available globally
 window.calendarManager = calendarManager;
-
-// User initialization
-async function initializeCalendarWithUser() {
-    const isStaff = await auth?.isStaff?.() ?? false;
-    if (isStaff) {
-        document.getElementById('staffOnlyControls')?.classList.remove('hidden');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initializeCalendarWithUser);

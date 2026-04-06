@@ -471,11 +471,11 @@
   <!-- Scripts -->
   <script type="module" src="script.js"></script>
   
-  <!-- Main Settings Script -->
+  <!-- Combined Settings Script (ONLY ONE) -->
   <script type="module">
     import { auth, supabase } from './supabase.js'
     
-    // DOM Elements
+    // ===== DOM ELEMENTS =====
     const userMenuButton = document.getElementById('userMenuButton')
     const userDropdown = document.getElementById('userDropdown')
     const userChevron = document.getElementById('userMenuChevron')
@@ -501,293 +501,501 @@
     let shows = []
     let currentShowId = localStorage.getItem('currentShowId') || null
     
-    // Toast function
+    // ===== TOAST FUNCTION =====
     window.showToast = function(message, type = 'info', title = '') {
-      const container = document.getElementById('toast-container')
-      if (!container) return
-      
-      const titles = { success: 'Success', error: 'Error', warning: 'Warning', info: 'Notice' }
-      const finalTitle = title || titles[type] || 'Notice'
-      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' }
-      const icon = icons[type] || 'fa-info-circle'
-      
-      const toast = document.createElement('div')
-      toast.className = `toast ${type}`
-      toast.innerHTML = `
-        <div class="toast-icon"><i class="fas ${icon}"></i></div>
-        <div class="toast-content"><div class="toast-title">${finalTitle}</div><div class="toast-message">${message}</div></div>
-        <button class="toast-close"><i class="fas fa-times"></i></button>
-      `
-      
-      container.appendChild(toast)
-      
-      const closeBtn = toast.querySelector('.toast-close')
-      closeBtn.addEventListener('click', () => {
-        toast.classList.add('hiding')
-        setTimeout(() => toast.remove(), 300)
-      })
-      
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.classList.add('hiding')
-          setTimeout(() => toast.remove(), 300)
-        }
-      }, 4000)
-    }
-    
-    // Load user info for sidebar
-    async function loadUserInfo() {
-      try {
-        const user = await auth.getUser()
-        if (user) {
-          const fullName = user.user_metadata?.full_name || 'User'
-          const email = user.email || 'user@example.com'
-          userName.textContent = fullName
-          userEmail.textContent = email
-          const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-          userInitials.textContent = initials
-        }
-      } catch (error) {
-        console.error('Error loading user info:', error)
-      }
-    }
-    
-    // Load shows
-    async function loadShows() {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        const container = document.getElementById('toast-container')
+        if (!container) return
         
-        const { data, error } = await supabase
-          .from('shows')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
+        const titles = { success: 'Success', error: 'Error', warning: 'Warning', info: 'Notice' }
+        const finalTitle = title || titles[type] || 'Notice'
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' }
+        const icon = icons[type] || 'fa-info-circle'
         
-        if (error) throw error
+        const toast = document.createElement('div')
+        toast.className = `toast ${type}`
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fas ${icon}"></i></div>
+            <div class="toast-content"><div class="toast-title">${finalTitle}</div><div class="toast-message">${message}</div></div>
+            <button class="toast-close"><i class="fas fa-times"></i></button>
+        `
         
-        shows = data || []
+        container.appendChild(toast)
         
-        // Populate selects
-        if (showSelect) showSelect.innerHTML = '<option value="">Select a show...</option>'
-        if (copyFromShowSelect) copyFromShowSelect.innerHTML = '<option value="">-- None (Start Fresh) --</option>'
-        
-        shows.forEach(show => {
-          if (showSelect) {
-            const option = document.createElement('option')
-            option.value = show.id
-            option.textContent = show.name
-            showSelect.appendChild(option)
-          }
-          if (copyFromShowSelect) {
-            const option = document.createElement('option')
-            option.value = show.id
-            option.textContent = show.name
-            copyFromShowSelect.appendChild(option)
-          }
+        const closeBtn = toast.querySelector('.toast-close')
+        closeBtn.addEventListener('click', () => {
+            toast.classList.add('hiding')
+            setTimeout(() => toast.remove(), 300)
         })
         
-        // Set current show
-        if (currentShowId && shows.find(s => s.id == currentShowId)) {
-          const currentShow = shows.find(s => s.id == currentShowId)
-          currentShowNameSpan.textContent = currentShow.name
-          if (showSelect) showSelect.value = currentShowId
-        } else if (shows.length > 0) {
-          currentShowId = shows[0].id
-          localStorage.setItem('currentShowId', currentShowId)
-          currentShowNameSpan.textContent = shows[0].name
-          if (showSelect) showSelect.value = currentShowId
-        } else {
-          currentShowNameSpan.textContent = 'No shows yet'
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.classList.add('hiding')
+                setTimeout(() => toast.remove(), 300)
+            }
+        }, 4000)
+    }
+    
+    // ===== USER MENU FUNCTIONS =====
+    async function loadUserInfo() {
+        try {
+            const user = await auth.getUser()
+            if (user) {
+                const fullName = user.user_metadata?.full_name || 'User'
+                const email = user.email || 'user@example.com'
+                userName.textContent = fullName
+                userEmail.textContent = email
+                const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                userInitials.textContent = initials
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error)
         }
-        
-      } catch (error) {
-        console.error('Error loading shows:', error)
-      }
     }
     
-    // Switch show
-    async function switchShow(showId) {
-      const show = shows.find(s => s.id == showId)
-      if (!show) return
-      
-      currentShowId = showId
-      localStorage.setItem('currentShowId', currentShowId)
-      currentShowNameSpan.textContent = show.name
-      
-      showToast(`Switched to "${show.name}"`, 'success')
-      
-      setTimeout(() => {
-        if (confirm('Show changed. Reload page to see updated data?')) {
-          window.location.reload()
-        }
-      }, 500)
-    }
-    
-    // Create new show
-    async function createNewShow() {
-      const showName = newShowNameInput?.value.trim()
-      if (!showName) {
-        showToast('Please enter a show name', 'warning')
-        return
-      }
-      
-      const copyFromId = copyFromShowSelect?.value
-      
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) throw new Error('Not authenticated')
-        
-        const { data: newShow, error: showError } = await supabase
-          .from('shows')
-          .insert([{ name: showName, user_id: user.id, created_at: new Date().toISOString() }])
-          .select()
-          .single()
-        
-        if (showError) throw showError
-        
-        if (copyFromId) {
-          await copyShowData(copyFromId, newShow.id, user.id)
-          showToast(`Show "${showName}" created with data from existing show!`, 'success')
-        } else {
-          showToast(`Show "${showName}" created successfully!`, 'success')
-        }
-        
-        closeCreateShowModalFunc()
-        newShowNameInput.value = ''
-        await loadShows()
-        await switchShow(newShow.id)
-        
-      } catch (error) {
-        console.error('Error creating show:', error)
-        showToast('Error creating show: ' + error.message, 'error')
-      }
-    }
-    
-    // Copy data from existing show
-    async function copyShowData(sourceShowId, targetShowId, userId) {
-      try {
-        const { data: students } = await supabase
-          .from('students')
-          .select('*')
-          .eq('show_id', sourceShowId)
-          .eq('user_id', userId)
-        
-        if (students && students.length > 0) {
-          const studentsToCopy = students.map(s => ({
-            name: s.name, grade: s.grade, roles: s.roles,
-            vocal_parts: s.vocal_parts, crew_specialties: s.crew_specialties,
-            notes: s.notes, show_id: targetShowId, user_id: userId
-          }))
-          await supabase.from('students').insert(studentsToCopy)
-        }
-        
-        const { data: inventory } = await supabase
-          .from('inventory')
-          .select('*')
-          .eq('show_id', sourceShowId)
-          .eq('user_id', userId)
-        
-        if (inventory && inventory.length > 0) {
-          const inventoryToCopy = inventory.map(i => ({
-            name: i.name, category: i.category, quantity: i.quantity,
-            condition: i.condition, location: i.location, assigned_to: i.assigned_to,
-            notes: i.notes, status: i.status, show_id: targetShowId, user_id: userId,
-            last_checked: new Date().toISOString().split('T')[0]
-          }))
-          await supabase.from('inventory').insert(inventoryToCopy)
-        }
-        
-      } catch (error) {
-        console.error('Error copying data:', error)
-      }
-    }
-    
-    // Save preferences
-    function savePreferences() {
-      const theme = themeSelect?.value
-      const notifications = notificationsSelect?.value
-      
-      if (theme) localStorage.setItem('theme', theme)
-      if (notifications) localStorage.setItem('notifications', notifications)
-      
-      if (theme === 'light') {
-        document.documentElement.classList.add('light-mode')
-        document.body.classList.add('light-mode')
-      } else {
-        document.documentElement.classList.remove('light-mode')
-        document.body.classList.remove('light-mode')
-      }
-      
-      showToast('Preferences saved!', 'success')
-    }
-    
-    // Load preferences
-    function loadPreferences() {
-      const savedTheme = localStorage.getItem('theme') || 'dark'
-      const savedNotifications = localStorage.getItem('notifications') || 'on'
-      
-      if (themeSelect) themeSelect.value = savedTheme
-      if (notificationsSelect) notificationsSelect.value = savedNotifications
-      
-      if (savedTheme === 'light') {
-        document.documentElement.classList.add('light-mode')
-        document.body.classList.add('light-mode')
-      }
-    }
-    
-    // Modal functions
-    function openCreateShowModalFunc() {
-      createShowModal.classList.remove('hidden')
-      createShowModal.classList.add('flex')
-    }
-    
-    function closeCreateShowModalFunc() {
-      createShowModal.classList.add('hidden')
-      createShowModal.classList.remove('flex')
-      if (newShowNameInput) newShowNameInput.value = ''
-      if (copyFromShowSelect) copyFromShowSelect.value = ''
-    }
-    
-    // User menu functions
     function toggleDropdown(e) {
-      e.stopPropagation()
-      userDropdown.classList.toggle('hidden')
-      userChevron.classList.toggle('rotate-180')
+        e.stopPropagation()
+        userDropdown.classList.toggle('hidden')
+        userChevron.classList.toggle('rotate-180')
     }
     
     function handleClickOutside(e) {
-      if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-        userDropdown.classList.add('hidden')
-        userChevron.classList.remove('rotate-180')
-      }
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.add('hidden')
+            userChevron.classList.remove('rotate-180')
+        }
     }
     
     async function handleLogout(e) {
-      e.preventDefault()
-      try {
-        await auth.signOut()
-        window.location.href = 'login.html'
-      } catch (error) {
-        console.error('Logout failed:', error)
-      }
+        e.preventDefault()
+        try {
+            await auth.signOut()
+            window.location.href = 'login.html'
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
     }
     
     function handleAccountSettings(e) {
-      e.preventDefault()
-      showToast('Account settings coming soon!', 'info')
-      userDropdown.classList.add('hidden')
-      userChevron.classList.remove('rotate-180')
+        e.preventDefault()
+        showToast('Account settings coming soon!', 'info')
+        userDropdown.classList.add('hidden')
+        userChevron.classList.remove('rotate-180')
     }
     
     function handleProfile(e) {
-      e.preventDefault()
-      showToast('Profile page coming soon!', 'info')
-      userDropdown.classList.add('hidden')
-      userChevron.classList.remove('rotate-180')
+        e.preventDefault()
+        showToast('Profile page coming soon!', 'info')
+        userDropdown.classList.add('hidden')
+        userChevron.classList.remove('rotate-180')
     }
     
-    // Event listeners
+    // ===== SHOW FUNCTIONS =====
+    async function loadShows() {
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            
+            const { data, error } = await supabase
+                .from('shows')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+            
+            if (error) throw error
+            
+            shows = data || []
+            
+            if (showSelect) showSelect.innerHTML = '<option value="">Select a show...</option>'
+            if (copyFromShowSelect) copyFromShowSelect.innerHTML = '<option value="">-- None (Start Fresh) --</option>'
+            
+            shows.forEach(show => {
+                if (showSelect) {
+                    const option = document.createElement('option')
+                    option.value = show.id
+                    option.textContent = show.name
+                    showSelect.appendChild(option)
+                }
+                if (copyFromShowSelect) {
+                    const copyOption = document.createElement('option')
+                    copyOption.value = show.id
+                    copyOption.textContent = show.name
+                    copyFromShowSelect.appendChild(copyOption)
+                }
+            })
+            
+            if (currentShowId && shows.find(s => s.id == currentShowId)) {
+                const currentShow = shows.find(s => s.id == currentShowId)
+                currentShowNameSpan.textContent = currentShow.name
+                if (showSelect) showSelect.value = currentShowId
+            } else if (shows.length > 0) {
+                currentShowId = shows[0].id
+                localStorage.setItem('currentShowId', currentShowId)
+                currentShowNameSpan.textContent = shows[0].name
+                if (showSelect) showSelect.value = currentShowId
+            } else {
+                currentShowNameSpan.textContent = 'No shows yet'
+            }
+            
+        } catch (error) {
+            console.error('Error loading shows:', error)
+            showToast('Error loading shows: ' + error.message, 'error')
+        }
+    }
+    
+    async function switchShow(showId) {
+        const show = shows.find(s => s.id == showId)
+        if (!show) return
+        
+        currentShowId = showId
+        localStorage.setItem('currentShowId', currentShowId)
+        currentShowNameSpan.textContent = show.name
+        
+        showToast(`Switched to "${show.name}"`, 'success')
+        
+        setTimeout(() => {
+            if (confirm('Show changed. Reload page to see updated data?')) {
+                window.location.reload()
+            }
+        }, 500)
+    }
+    
+    async function createNewShow() {
+        const showName = newShowNameInput?.value.trim()
+        if (!showName) {
+            showToast('Please enter a show name', 'warning')
+            return
+        }
+        
+        const copyFromId = copyFromShowSelect?.value
+        
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) throw new Error('Not authenticated')
+            
+            const { data: newShow, error: showError } = await supabase
+                .from('shows')
+                .insert([{ name: showName, user_id: user.id, created_at: new Date().toISOString() }])
+                .select()
+                .single()
+            
+            if (showError) throw showError
+            
+            if (copyFromId) {
+                await copyShowData(copyFromId, newShow.id, user.id)
+                showToast(`Show "${showName}" created with data from existing show!`, 'success')
+            } else {
+                showToast(`Show "${showName}" created successfully!`, 'success')
+            }
+            
+            closeCreateShowModalFunc()
+            newShowNameInput.value = ''
+            await loadShows()
+            await switchShow(newShow.id)
+            
+            // Set flag that user just created a show
+            localStorage.setItem('justCreatedShow', 'true')
+            
+        } catch (error) {
+            console.error('Error creating show:', error)
+            showToast('Error creating show: ' + error.message, 'error')
+        }
+    }
+    
+    async function copyShowData(sourceShowId, targetShowId, userId) {
+        try {
+            const { data: students } = await supabase
+                .from('students')
+                .select('*')
+                .eq('show_id', sourceShowId)
+                .eq('user_id', userId)
+            
+            if (students && students.length > 0) {
+                const studentsToCopy = students.map(s => ({
+                    name: s.name, grade: s.grade, roles: s.roles,
+                    vocal_parts: s.vocal_parts, crew_specialties: s.crew_specialties,
+                    notes: s.notes, show_id: targetShowId, user_id: userId
+                }))
+                await supabase.from('students').insert(studentsToCopy)
+            }
+            
+            const { data: inventory } = await supabase
+                .from('inventory')
+                .select('*')
+                .eq('show_id', sourceShowId)
+                .eq('user_id', userId)
+            
+            if (inventory && inventory.length > 0) {
+                const inventoryToCopy = inventory.map(i => ({
+                    name: i.name, category: i.category, quantity: i.quantity,
+                    condition: i.condition, location: i.location, assigned_to: i.assigned_to,
+                    notes: i.notes, status: i.status, show_id: targetShowId, user_id: userId,
+                    last_checked: new Date().toISOString().split('T')[0]
+                }))
+                await supabase.from('inventory').insert(inventoryToCopy)
+            }
+            
+        } catch (error) {
+            console.error('Error copying data:', error)
+        }
+    }
+    
+  // savePreferences function
+function savePreferences() {
+    const theme = themeSelect?.value
+    const notifications = notificationsSelect?.value
+    
+    if (theme) {
+        localStorage.setItem('theme', theme)
+        // Apply theme immediately using the global function
+        if (window.setTheme) {
+            window.setTheme(theme)
+        } else {
+            // Fallback if function not available
+            if (theme === 'light') {
+                document.body.classList.add('light-mode')
+                document.documentElement.classList.add('light-mode')
+            } else {
+                document.body.classList.remove('light-mode')
+                document.documentElement.classList.remove('light-mode')
+            }
+        }
+    }
+    if (notifications) localStorage.setItem('notifications', notifications)
+    
+    showToast('Preferences saved!', 'success')
+}
+
+// Also update loadPreferences to sync the dropdown
+function loadPreferences() {
+    const savedTheme = localStorage.getItem('theme') || 'dark'
+    const savedNotifications = localStorage.getItem('notifications') || 'on'
+    
+    if (themeSelect) themeSelect.value = savedTheme
+    if (notificationsSelect) notificationsSelect.value = savedNotifications
+    
+    // Apply theme
+    if (window.applyTheme) {
+        window.applyTheme(savedTheme)
+    } else {
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode')
+            document.body.classList.add('light-mode')
+        } else {
+            document.documentElement.classList.remove('light-mode')
+            document.body.classList.remove('light-mode')
+        }
+    }
+}
+    
+    // ===== MODAL FUNCTIONS =====
+    function openCreateShowModalFunc() {
+        createShowModal.classList.remove('hidden')
+        createShowModal.classList.add('flex')
+    }
+    
+    function closeCreateShowModalFunc() {
+        createShowModal.classList.add('hidden')
+        createShowModal.classList.remove('flex')
+        if (newShowNameInput) newShowNameInput.value = ''
+        if (copyFromShowSelect) copyFromShowSelect.value = ''
+    }
+    
+  // ===== NEW USER WELCOME - IMPROVED VERSION =====
+const urlParam = new URLSearchParams(window.location.search)
+const isNewUserFlag = urlParam.get('new') === 'true'
+
+if (isNewUserFlag) {
+    setTimeout(async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        
+        const { data: existingShows } = await supabase
+            .from('shows')
+            .select('id')
+            .eq('user_id', user.id)
+            .limit(1)
+        
+        if (!existingShows || existingShows.length === 0) {
+            // Create a persistent banner instead of a toast
+            const banner = document.createElement('div')
+            banner.id = 'welcomeBanner'
+            banner.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                left: auto;
+                max-width: 400px;
+                background: linear-gradient(135deg, #1e293b, #0f172a);
+                border-left: 4px solid #f59e0b;
+                border-radius: 0.75rem;
+                padding: 1rem 1rem 1rem 1.25rem;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                backdrop-filter: blur(10px);
+            `
+            banner.innerHTML = `
+                <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                    <div style="font-size: 1.5rem;">🎭</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: #fbbf24; margin-bottom: 0.25rem;">Welcome to TheatreFlow!</div>
+                        <div style="font-size: 0.875rem; color: #cbd5e1; margin-bottom: 0.75rem;">
+                            You need to create a show before you can start adding students, events, and tracking attendance.
+                        </div>
+                        <button id="dismissWelcomeBtn" style="
+                            background: #f59e0b;
+                            color: #0f172a;
+                            border: none;
+                            padding: 0.375rem 0.875rem;
+                            border-radius: 0.5rem;
+                            font-size: 0.75rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            margin-right: 0.5rem;
+                        " onmouseover="this.style.background='#fbbf24'" onmouseout="this.style.background='#f59e0b'">
+                            Create Show Now
+                        </button>
+                        <button id="remindMeLaterBtn" style="
+                            background: transparent;
+                            color: #94a3b8;
+                            border: 1px solid #475569;
+                            padding: 0.375rem 0.875rem;
+                            border-radius: 0.5rem;
+                            font-size: 0.75rem;
+                            font-weight: 500;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.background='#334155'" onmouseout="this.style.background='transparent'">
+                            Remind Me Later
+                        </button>
+                    </div>
+                    <button id="closeWelcomeBanner" style="
+                        background: none;
+                        border: none;
+                        color: #64748b;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    " onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `
+            
+            document.body.appendChild(banner)
+            
+            // Add animation style if not exists
+            if (!document.querySelector('#slideInRight-style')) {
+                const style = document.createElement('style')
+                style.id = 'slideInRight-style'
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `
+                document.head.appendChild(style)
+            }
+            
+            // Handle "Create Show Now" button
+            document.getElementById('dismissWelcomeBtn')?.addEventListener('click', () => {
+                banner.remove()
+                // Scroll to and highlight the create show button
+                const createBtn = document.getElementById('createNewShowBtn')
+                if (createBtn) {
+                    createBtn.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                    createBtn.style.animation = 'pulse 2s infinite'
+                    createBtn.style.boxShadow = '0 0 0 0 rgba(180, 83, 9, 0.7)'
+                    
+                    if (!document.querySelector('#pulse-style')) {
+                        const pulseStyle = document.createElement('style')
+                        pulseStyle.id = 'pulse-style'
+                        pulseStyle.textContent = `
+                            @keyframes pulse {
+                                0% { box-shadow: 0 0 0 0 rgba(180, 83, 9, 0.7); }
+                                70% { box-shadow: 0 0 0 10px rgba(180, 83, 9, 0); }
+                                100% { box-shadow: 0 0 0 0 rgba(180, 83, 9, 0); }
+                            }
+                        `
+                        document.head.appendChild(pulseStyle)
+                    }
+                }
+                // Open the create show modal
+                openCreateShowModalFunc()
+            })
+            
+            // Handle "Remind Me Later" button
+            document.getElementById('remindMeLaterBtn')?.addEventListener('click', () => {
+                banner.remove()
+                // Store that user was reminded, show again in 5 minutes if they haven't created a show
+                localStorage.setItem('remindMeLater', Date.now().toString())
+                showToast('You can create a show later from the Settings page.', 'info')
+            })
+            
+            // Handle close button
+            document.getElementById('closeWelcomeBanner')?.addEventListener('click', () => {
+                banner.remove()
+            })
+            
+            // Also pulse the create button
+            const createBtn = document.getElementById('createNewShowBtn')
+            if (createBtn) {
+                createBtn.style.animation = 'pulse 2s infinite'
+                createBtn.style.boxShadow = '0 0 0 0 rgba(180, 83, 9, 0.7)'
+                
+                if (!document.querySelector('#pulse-style')) {
+                    const pulseStyle = document.createElement('style')
+                    pulseStyle.id = 'pulse-style'
+                    pulseStyle.textContent = `
+                        @keyframes pulse {
+                            0% { box-shadow: 0 0 0 0 rgba(180, 83, 9, 0.7); }
+                            70% { box-shadow: 0 0 0 10px rgba(180, 83, 9, 0); }
+                            100% { box-shadow: 0 0 0 0 rgba(180, 83, 9, 0); }
+                        }
+                    `
+                    document.head.appendChild(pulseStyle)
+                }
+            }
+        }
+    }, 500)
+}
+
+// Check if user just created a show (from login redirect)
+const justCreatedShowFlag = localStorage.getItem('justCreatedShow')
+if (justCreatedShowFlag === 'true') {
+    localStorage.removeItem('justCreatedShow')
+    setTimeout(() => {
+        showToast('🎉 Your show is ready! Now you can add students, events, and more!', 'success', 'Show Created!')
+    }, 1000)
+}
+
+// Check for "Remind Me Later" - if it's been more than 5 minutes and user still has no shows
+const remindMeLaterTime = localStorage.getItem('remindMeLater')
+if (remindMeLaterTime) {
+    const fiveMinutes = 5 * 60 * 1000
+    const timePassed = Date.now() - parseInt(remindMeLaterTime)
+    
+    if (timePassed > fiveMinutes) {
+        localStorage.removeItem('remindMeLater')
+        // Check if user still has no shows
+        setTimeout(async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                const { data: existingShows } = await supabase
+                    .from('shows')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .limit(1)
+                
+                if (!existingShows || existingShows.length === 0) {
+                    // Show another reminder
+                    showToast('Don\'t forget to create a show to start using TheatreFlow!', 'warning', 'Reminder')
+                }
+            }
+        }, 1000)
+    }
+}
+    // ===== EVENT LISTENERS =====
     if (userMenuButton) userMenuButton.addEventListener('click', toggleDropdown)
     document.addEventListener('click', handleClickOutside)
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout)
@@ -804,19 +1012,18 @@
     if (confirmCreateShowBtn) confirmCreateShowBtn.addEventListener('click', createNewShow)
     
     if (showSelect) {
-      showSelect.addEventListener('change', (e) => {
-        if (e.target.value) switchShow(e.target.value)
-      })
+        showSelect.addEventListener('change', (e) => {
+            if (e.target.value) switchShow(e.target.value)
+        })
     }
     
     if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', savePreferences)
     if (cancelSettingsBtn) cancelSettingsBtn.addEventListener('click', loadPreferences)
     
-    // Initialize
+    // ===== INITIALIZE =====
     loadUserInfo()
     loadShows()
     loadPreferences()
-    
   </script>
 </body>
 </html>

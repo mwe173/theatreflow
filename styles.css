@@ -1,5 +1,24 @@
 /* ===== THEATRE MANAGER STYLES - DARK MODE ===== */
 
+/* Prevent flash of wrong theme - hide body until theme is applied */
+html:not(.light-mode) body {
+  visibility: hidden;
+}
+
+html.light-mode body {
+  visibility: visible;
+}
+
+html:not(.light-mode) .main-gradient {
+  background: #0f172a;
+}
+
+/* When theme is known, show body */
+html.light-mode body,
+html:not(.light-mode) body {
+  visibility: visible;
+}
+
 /* Font Classes */
 .font-display { font-family: 'Playfair Display', serif; }
 .font-body { font-family: 'Source Sans 3', sans-serif; }
@@ -1100,4 +1119,745 @@ textarea:focus {
 
 .toast.hiding {
     animation: slideOut 0.3s ease forwards;
+}
+
+/* ===== LIGHT MODE STYLES - DARKER BLUE VERSION ===== */
+body.light-mode {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+body.light-mode .main-gradient {
+    background: #f1f5f9;
+}
+
+/* Sidebar in light mode */
+body.light-mode .sidebar-glass {
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .sidebar-glass #theatre-name {
+    color: #1e293b !important;
+}
+
+body.light-mode .sidebar-glass .sidebar-item span:not(.sidebar-badge),
+body.light-mode .sidebar-glass .user-profile p {
+    color: #334155;
+}
+
+body.light-mode .sidebar-glass .text-amber-200\/50,
+body.light-mode .sidebar-glass .text-amber-200\/40,
+body.light-mode .sidebar-glass .text-amber-200\/70 {
+    color: #64748b !important;
+}
+
+body.light-mode .sidebar-glass .bg-amber-600\/20 {
+    background: #e2e8f0 !important;
+}
+
+body.light-mode .sidebar-glass .bg-amber-600 {
+    background: #1e3a8a !important; /* Darker blue */
+}
+
+body.light-mode .sidebar-item:hover {
+    background: #f1f5f9;
+}
+
+body.light-mode .sidebar-item.active {
+    background: #dbeafe;
+    border-left-color: #1e3a8a; /* Darker blue */
+}
+
+body.light-mode .sidebar-item.active span,
+body.light-mode .sidebar-item.active i {
+    color: #1e3a8a !important; /* Darker blue */
+}
+
+body.light-mode .user-profile {
+    background: #f1f5f9;
+}
+
+body.light-mode .user-profile:hover {
+    background: #e2e8f0;
+}
+
+/* Stat cards in light mode */
+body.light-mode .stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .stat-card .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .stat-card .text-amber-200\/50,
+body.light-mode .stat-card .text-amber-200\/40 {
+    color: #64748b !important;
+}
+
+body.light-mode .stat-card i {
+    color: #1e3a8a !important; /* Darker blue */
+}
+
+body.light-mode .stat-card::after {
+    background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.05), transparent 70%);
+}
+
+/* Cards and containers in light mode */
+body.light-mode .bg-amber-900\/20 {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .bg-amber-900\/20 .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .bg-amber-900\/20 .text-amber-200\/70,
+body.light-mode .bg-amber-900\/20 .text-amber-200\/50,
+body.light-mode .bg-amber-900\/20 .text-amber-200\/40 {
+    color: #475569 !important;
+}
+
+body.light-mode .bg-amber-900\/20 .border-amber-600\/20 {
+    border-color: #e2e8f0 !important;
+}
+
+body.light-mode .bg-amber-900\/20 .bg-amber-600\/20 {
+    background: #f1f5f9 !important;
+}
+
+body.light-mode .bg-amber-900\/20 .text-amber-400 {
+    color: #1e3a8a !important; /* Darker blue */
+}
+
+/* Headers in light mode */
+body.light-mode header .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode header .text-amber-200\/70 {
+    color: #475569 !important;
+}
+
+body.light-mode header .bg-amber-600\/20 {
+    background: #dbeafe !important;
+    border-color: #bfdbfe !important;
+    color: #1e3a8a !important; /* Darker blue */
+}
+
+/* Buttons in light mode */
+body.light-mode .action-btn {
+    background: rgba(30, 58, 138, 0.1);
+    color: #1e3a8a;
+}
+
+body.light-mode .action-btn:hover {
+    background: rgba(30, 58, 138, 0.2);
+}
+
+body.light-mode .action-btn.primary {
+    background: linear-gradient(135deg, #1e3a8a, #1e3a8a);
+    color: white;
+}
+
+body.light-mode .filter-btn,
+body.light-mode .today-btn,
+body.light-mode .calendar-nav-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+body.light-mode .filter-btn:hover,
+body.light-mode .today-btn:hover,
+body.light-mode .calendar-nav-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+body.light-mode .filter-btn.active {
+    background: linear-gradient(135deg, #1e3a8a, #1e3a8a);
+    color: white;
+    border-color: transparent;
+}
+
+/* Inputs and selects in light mode */
+body.light-mode input,
+body.light-mode select,
+body.light-mode textarea,
+body.light-mode .search-input,
+body.light-mode .settings-select,
+body.light-mode .settings-input {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+
+body.light-mode input:focus,
+body.light-mode select:focus,
+body.light-mode textarea:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+body.light-mode .notes-field {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Student cards in light mode */
+body.light-mode .student-card,
+body.light-mode .inventory-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .student-card:hover,
+body.light-mode .inventory-card:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+body.light-mode .student-card h3,
+body.light-mode .inventory-card h3 {
+    color: #0f172a;
+}
+
+/* Modals in light mode */
+body.light-mode #eventModal > div,
+body.light-mode #viewEventModal > div,
+body.light-mode #studentModal > div,
+body.light-mode #inventoryModal > div,
+body.light-mode #createShowModal > div {
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    border-color: #e2e8f0;
+}
+
+body.light-mode .bg-gradient-to-br.from-amber-900\/90 {
+    background: #ffffff !important;
+}
+
+body.light-mode .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .text-amber-200\/70 {
+    color: #475569 !important;
+}
+
+body.light-mode .border-amber-600\/20,
+body.light-mode .border-amber-600\/30 {
+    border-color: #e2e8f0 !important;
+}
+
+body.light-mode .bg-amber-950\/50 {
+    background: #f8fafc !important;
+}
+
+/* Footer in light mode */
+body.light-mode footer .text-amber-200\/40 {
+    color: #94a3b8 !important;
+}
+
+/* Toast in light mode */
+body.light-mode .toast {
+    background: #ffffff;
+    border-left-color: #1e3a8a;
+}
+
+body.light-mode .toast.success .toast-icon {
+    color: #10b981;
+}
+
+body.light-mode .toast.error .toast-icon {
+    color: #ef4444;
+}
+
+body.light-mode .toast.warning .toast-icon {
+    color: #f59e0b;
+}
+
+body.light-mode .toast.info .toast-icon {
+    color: #1e3a8a;
+}
+
+/* Calendar grid in light mode */
+body.light-mode .mini-calendar-day {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+body.light-mode .mini-calendar-day:not(.empty):hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+body.light-mode .mini-calendar-day.selected {
+    background: linear-gradient(135deg, #1e3a8a, #1e3a8a) !important;
+    color: white !important;
+}
+
+body.light-mode .mini-calendar-day.today {
+    border: 2px solid #1e3a8a;
+}
+
+body.light-mode .mini-calendar-day.has-event {
+    color: #1e3a8a;
+}
+
+/* Fix amber text overrides - darker blue */
+body.light-mode .text-amber-400 {
+    color: #1e3a8a !important;
+}
+
+body.light-mode .text-amber-300 {
+    color: #3b82f6 !important;
+}
+
+body.light-mode .text-amber-200 {
+    color: #64748b !important;
+}
+
+body.light-mode .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .bg-amber-600 {
+    background: #1e3a8a !important;
+}
+
+body.light-mode .bg-amber-600\/20 {
+    background: rgba(30, 58, 138, 0.1) !important;
+}
+
+body.light-mode .border-amber-600\/30 {
+    border-color: rgba(30, 58, 138, 0.3) !important;
+}
+
+body.light-mode .from-amber-600 {
+    --tw-gradient-from: #1e3a8a !important;
+}
+
+body.light-mode .to-amber-500 {
+    --tw-gradient-to: #1e3a8a !important;
+}
+
+body.light-mode .ring-amber-400 {
+    --tw-ring-color: #1e3a8a !important;
+}
+
+body.light-mode .hover\:bg-amber-700:hover {
+    background: #1e3a8a !important;
+}
+
+body.light-mode .focus\:border-amber-600:focus {
+    border-color: #1e3a8a !important;
+}
+
+/* Fix for the "Selected" badge in calendar */
+body.light-mode .bg-amber-600\/30 {
+    background: rgba(30, 58, 138, 0.15) !important;
+    color: #1e3a8a !important;
+}
+
+/* Sidebar icons and text in light mode - fix amber colors */
+body.light-mode .sidebar-item i,
+body.light-mode .sidebar-item .fas,
+body.light-mode .sidebar-item .far {
+    color: #1e3a8a !important; /* Darker blue */
+}
+
+body.light-mode .sidebar-item.active i,
+body.light-mode .sidebar-item.active .fas {
+    color: #1e3a8a !important;
+}
+
+body.light-mode .sidebar-item:hover i,
+body.light-mode .sidebar-item:hover .fas {
+    color: #1e3a8a !important;
+}
+
+/* Sidebar text colors */
+body.light-mode .sidebar-item span {
+    color: #334155 !important;
+}
+
+body.light-mode .sidebar-item.active span {
+    color: #1e3a8a !important;
+}
+
+body.light-mode .sidebar-item:hover span {
+    color: #1e3a8a !important;
+}
+
+/* Sidebar section headers */
+body.light-mode .sidebar-text-group.text-xs.uppercase {
+    color: #64748b !important;
+}
+
+/* Sidebar logo area */
+body.light-mode .sidebar-glass .bg-amber-600 {
+    background: #1e3a8a !important;
+}
+
+body.light-mode .sidebar-glass .bg-amber-600 svg {
+    color: white !important;
+}
+
+/* User profile section in sidebar */
+body.light-mode .user-profile .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .user-profile .text-amber-200\/50 {
+    color: #64748b !important;
+}
+
+body.light-mode .user-profile i {
+    color: #64748b !important;
+}
+
+body.light-mode .user-profile:hover i {
+    color: #1e3a8a !important;
+}
+
+/* Dropdown menu items */
+body.light-mode #userDropdown a {
+    color: #334155 !important;
+}
+
+body.light-mode #userDropdown a:hover {
+    color: #1e3a8a !important;
+    background: rgba(30, 58, 138, 0.1) !important;
+}
+
+body.light-mode #userDropdown a i {
+    color: #1e3a8a !important;
+}
+
+/* Collapse/Expand button */
+body.light-mode #toggleSidebar {
+    background: #e2e8f0 !important;
+    color: #1e3a8a !important;
+}
+
+body.light-mode #toggleSidebar:hover {
+    background: #cbd5e1 !important;
+}
+
+/* Smooth theme transitions */
+body,
+body *,
+.sidebar-glass,
+.stat-card,
+.bg-amber-900\/20,
+.student-card,
+.inventory-card,
+.mini-calendar-day,
+.event-list-item,
+input,
+select,
+textarea,
+button {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Fix Upcoming Today text contrast */
+#upcoming-events-preview .text-amber-100 {
+    color: #e2e8f0 !important;
+    font-weight: 500;
+}
+
+#upcoming-events-preview .text-amber-200\/50,
+#upcoming-events-preview .text-amber-200\/70 {
+    color: #94a3b8 !important;
+}
+
+#upcoming-events-preview .bg-amber-600\/10 {
+    background: rgba(51, 65, 85, 0.5) !important;
+}
+
+#upcoming-events-preview .rounded-lg {
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+/* Light mode fixes for upcoming today */
+body.light-mode #upcoming-events-preview .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode #upcoming-events-preview .text-amber-200\/50 {
+    color: #475569 !important;
+}
+
+body.light-mode #upcoming-events-preview .bg-amber-600\/10 {
+    background: rgba(241, 245, 249, 0.8) !important;
+}
+
+body.light-mode #upcoming-events-preview .rounded-lg {
+    border: 1px solid #e2e8f0;
+}
+
+/* ===== FIXES FOR READABILITY ===== */
+
+/* 1. Fix attendance summary text contrast */
+.summary-stat .text-amber-200\/50 {
+    color: #94a3b8 !important;
+}
+
+.summary-stat .font-display {
+    color: #f1f5f9 !important;
+    font-weight: 700;
+}
+
+/* Dark mode - attendance stats */
+body:not(.light-mode) .summary-stat .text-amber-200\/50 {
+    color: #cbd5e1 !important;
+}
+
+body:not(.light-mode) #totalStudentsStat,
+body:not(.light-mode) #presentCount,
+body:not(.light-mode) #absentCount,
+body:not(.light-mode) #otherCount {
+    color: #f1f5f9 !important;
+}
+
+/* Light mode - attendance stats */
+body.light-mode .summary-stat .text-amber-200\/50 {
+    color: #475569 !important;
+}
+
+body.light-mode #totalStudentsStat,
+body.light-mode #presentCount,
+body.light-mode #absentCount,
+body.light-mode #otherCount {
+    color: #0f172a !important;
+}
+
+/* 2. Fix props/costumes edit modal text */
+#inventoryModal label,
+#inventoryModal .text-amber-200\/70 {
+    color: #cbd5e1 !important;
+}
+
+body.light-mode #inventoryModal label,
+body.light-mode #inventoryModal .text-amber-200\/70 {
+    color: #334155 !important;
+}
+
+#inventoryModal input,
+#inventoryModal select,
+#inventoryModal textarea {
+    color: #f1f5f9 !important;
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+#inventoryModal input::placeholder,
+#inventoryModal textarea::placeholder {
+    color: #64748b !important;
+}
+
+body.light-mode #inventoryModal input,
+body.light-mode #inventoryModal select,
+body.light-mode #inventoryModal textarea {
+    color: #0f172a !important;
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-mode #inventoryModal input::placeholder,
+body.light-mode #inventoryModal textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* 3. Fix any remaining light amber text */
+.text-amber-200\/50,
+.text-amber-200\/70,
+.text-amber-200\/40 {
+    color: #94a3b8 !important;
+}
+
+body.light-mode .text-amber-200\/50,
+body.light-mode .text-amber-200\/70,
+body.light-mode .text-amber-200\/40 {
+    color: #475569 !important;
+}
+
+/* 4. Fix status select dropdown text in attendance */
+.status-select {
+    color: #e2e8f0 !important;
+}
+
+.status-select option {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+body.light-mode .status-select {
+    color: #0f172a !important;
+}
+
+body.light-mode .status-select option {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+/* 5. Fix notes field text */
+.notes-field {
+    color: #e2e8f0 !important;
+}
+
+.notes-field::placeholder {
+    color: #64748b !important;
+}
+
+body.light-mode .notes-field {
+    color: #0f172a !important;
+}
+
+body.light-mode .notes-field::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* 6. Fix student info text in attendance */
+.student-info .text-amber-100 {
+    color: #f1f5f9 !important;
+}
+
+.student-info .text-amber-200\/50 {
+    color: #94a3b8 !important;
+}
+
+body.light-mode .student-info .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .student-info .text-amber-200\/50 {
+    color: #64748b !important;
+}
+
+/* 7. Fix the "Selected" badge text */
+.bg-amber-600\/30 {
+    color: #fbbf24 !important;
+}
+
+body.light-mode .bg-amber-600\/30 {
+    color: #1e3a8a !important;
+    background: rgba(30, 58, 138, 0.1) !important;
+}
+
+/* 8. Fix the quick stats numbers on homepage */
+#castCount, #crewCount, #rehearsalsCount, #daysToOpening {
+    color: #f1f5f9 !important;
+}
+
+body.light-mode #castCount,
+body.light-mode #crewCount,
+body.light-mode #rehearsalsCount,
+body.light-mode #daysToOpening {
+    color: #0f172a !important;
+}
+
+/* 9. Fix stat card labels */
+.stat-card .text-amber-200\/50 {
+    color: #94a3b8 !important;
+}
+
+body.light-mode .stat-card .text-amber-200\/50 {
+    color: #64748b !important;
+}
+
+/* 10. Fix the "No performance scheduled" text */
+#openingDate {
+    color: #94a3b8 !important;
+}
+
+body.light-mode #openingDate {
+    color: #64748b !important;
+}
+
+/* Light mode - Event list items */
+body.light-mode .event-list-item {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+body.light-mode .event-list-item:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-mode .event-list-item .text-amber-100 {
+    color: #0f172a !important;
+}
+
+body.light-mode .event-list-item .text-amber-200\/70 {
+    color: #475569 !important;
+}
+
+body.light-mode .event-list-item .text-amber-200\/50 {
+    color: #64748b !important;
+}
+
+body.light-mode .event-list-item.past-event {
+    opacity: 0.6;
+}
+
+body.light-mode .event-list-item.past-event .text-gray-400,
+body.light-mode .event-list-item.past-event .text-gray-500 {
+    color: #64748b !important;
+}
+
+/* Light mode - Section headers */
+body.light-mode .section-header h3 {
+    color: #0f172a !important;
+}
+
+body.light-mode .section-header .text-amber-200\/50 {
+    color: #64748b !important;
+}
+
+body.light-mode .section-header i {
+    color: #1e3a8a !important;
+}
+
+/* Light mode - Border colors for sections */
+body.light-mode .border-blue-500\/50 {
+    border-color: rgba(30, 58, 138, 0.3) !important;
+}
+
+body.light-mode .border-green-500\/50 {
+    border-color: rgba(30, 58, 138, 0.3) !important;
+}
+
+body.light-mode .border-gray-500\/50 {
+    border-color: rgba(100, 116, 139, 0.3) !important;
+}
+
+/* Light mode - Event background for today */
+body.light-mode .event-list-item[style*="rgba(245, 158, 11, 0.1)"] {
+    background: #fef3c7 !important;
+}
+
+/* Light mode - Event text colors */
+body.light-mode .event-list-item .font-medium {
+    color: #0f172a !important;
+}
+
+body.light-mode .event-list-item .text-xs {
+    color: #475569 !important;
+}
+
+/* Light mode - Event type badge */
+body.light-mode .event-list-item .rounded-full {
+    color: #1e3a8a !important;
 }

@@ -94,12 +94,24 @@ export const api = {
             return await supabase.from('students').select('*')
         }
     },
-    events: { 
-        getAll: async () => {
-            if (!supabase) return { data: [], error: new Error('Supabase not configured') }
-            return await supabase.from('events').select('*')
-        }
-    },
+    // In supabase.js, update the events.getAll function:
+events: { 
+    getAll: async () => {
+        if (!supabase) return { data: [], error: new Error('Supabase not configured') }
+        
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return { data: [], error: new Error('Not authenticated') }
+        
+        const currentShowId = localStorage.getItem('currentShowId')
+        if (!currentShowId) return { data: [], error: new Error('No show selected') }
+        
+        return await supabase
+            .from('events')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('show_id', currentShowId)
+    }
+},
     attendance: { 
         getByDate: async (date) => {
             if (!supabase) return { data: [], error: new Error('Supabase not configured') }

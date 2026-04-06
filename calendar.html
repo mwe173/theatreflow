@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar - Theatre Manager</title>
-    
+
+    <!-- Make sure supabase is available globally -->
+<script type="module">
+    import { supabase, auth } from './supabase.js'
+    window.supabase = supabase
+    window.auth = auth
+    console.log('Supabase made global for calendar')
+</script>
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     
@@ -22,83 +29,125 @@
         /* Calendar Page Specific Styles - Matching Attendance Page */
         
         /* Mini Calendar - Matches homepage calendar style */
-        .mini-calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-        
-        .mini-calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-        
-        .mini-calendar-day:not(.empty):hover {
-            background: #1e293b;
-            border-color: #475569;
-            transform: scale(1.05);
-            color: #f1f5f9;
-        }
-        
-        .mini-calendar-day.selected {
-            background: linear-gradient(135deg, #b45309, #d97706) !important;
-            color: white !important;
-            font-weight: 600;
-            border: none;
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(180, 83, 9, 0.3);
-        }
-        
-        .mini-calendar-day.today {
-            border: 2px solid #f59e0b;
-            font-weight: bold;
-        }
-        
-        .mini-calendar-day.has-event {
-            position: relative;
-            font-weight: 500;
-            color: #fbbf24;
-        }
-        
-        .mini-calendar-day.has-event::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: #fbbf24;
-        }
-        
-        .mini-calendar-day.has-event.selected::after {
-            background: white;
-        }
-        
-        .mini-calendar-day.empty {
-            background: transparent;
-            border: 1px solid transparent;
-            pointer-events: none;
-        }
-        
-        .mini-calendar-weekday {
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #94a3b8;
-            padding: 0.5rem 0;
-        }
+.mini-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.mini-calendar-day {
+    aspect-ratio: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+.mini-calendar-day:not(.empty):hover {
+    background: #1e293b;
+    border-color: #475569;
+    transform: scale(1.05);
+    color: #f1f5f9;
+}
+
+.mini-calendar-day.selected {
+    background: linear-gradient(135deg, #b45309, #d97706) !important;
+    color: white !important;
+    font-weight: 600;
+    border: none;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(180, 83, 9, 0.3);
+}
+
+.mini-calendar-day.today {
+    border: 2px solid #f59e0b;
+    font-weight: bold;
+}
+
+.mini-calendar-day.has-event {
+    font-weight: 500;
+    color: #fbbf24;
+}
+
+/* Remove the old ::after pseudo-element that was causing issues */
+.mini-calendar-day.has-event::after {
+    display: none;
+}
+
+/* Style the dots container correctly */
+.mini-calendar-day .event-dots {
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    margin-top: 2px;
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+}
+
+.mini-calendar-day .event-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.mini-calendar-day.empty {
+    background: transparent;
+    border: 1px solid transparent;
+    pointer-events: none;
+}
+
+.mini-calendar-weekday {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    padding: 0.5rem 0;
+}
+
+/* Event section styling */
+.section-header {
+    transition: all 0.2s ease;
+}
+
+.section-header:hover {
+    opacity: 0.8;
+}
+
+.section-toggle {
+    transition: transform 0.2s ease;
+}
+
+/* Current events styling - highlighted */
+.event-list-item.border-l-4 {
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+/* Past events styling - faded but readable */
+.event-list-item.past-event {
+    opacity: 0.7;
+}
+
+.event-list-item.past-event:hover {
+    opacity: 1;
+}
+
+/* Collapsible section content */
+[id^="section-"] {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
         
         /* Event List Items - Matching attendance student rows */
         .event-list-item {
