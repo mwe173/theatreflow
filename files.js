@@ -1,4 +1,4 @@
-// ===== FILES MANAGEMENT WITH SUPABASE (FULLY WORKING) =====
+// ===== FILES MANAGEMENT WITH SUPABASE (COMPLETE WORKING VERSION) =====
 
 import { supabase, auth } from './supabase.js';
 
@@ -1045,125 +1045,124 @@ class FileManager {
             .replace(/'/g, '&#39;');
     }
 
-    setupEventListeners() {
-        console.log('Setting up event listeners...');
-        
-        // View toggle
-        const gridViewBtn = document.getElementById('gridViewBtn');
-        const listViewBtn = document.getElementById('listViewBtn');
-        
-        if (gridViewBtn) {
-            gridViewBtn.addEventListener('click', () => {
-                gridViewBtn.classList.add('active');
-                listViewBtn.classList.remove('active');
-                this.viewMode = 'grid';
-                this.render();
-            });
-        }
-        
-        if (listViewBtn) {
-            listViewBtn.addEventListener('click', () => {
-                listViewBtn.classList.add('active');
-                gridViewBtn.classList.remove('active');
-                this.viewMode = 'list';
-                this.render();
-            });
-        }
-        
-        // Search
-        const searchInput = document.getElementById('searchFiles');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.searchTerm = e.target.value;
-                this.render();
-            });
-        }
-        
-        // Sort
-        const sortSelect = document.getElementById('sortFiles');
-        if (sortSelect) {
-            sortSelect.addEventListener('change', (e) => {
-                this.sortBy = e.target.value;
-                this.render();
-            });
-        }
-        
-        // Quick access tags
-        document.querySelectorAll('.tag').forEach(tag => {
-            tag.addEventListener('click', () => {
-                const filter = tag.dataset.filter;
-                this.searchTerm = filter;
-                const searchEl = document.getElementById('searchFiles');
-                if (searchEl) searchEl.value = filter;
-                this.render();
-            });
+setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
+    // View toggle
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
+    
+    if (gridViewBtn) {
+        gridViewBtn.addEventListener('click', () => {
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+            this.viewMode = 'grid';
+            this.render();
         });
-        
-        // Upload functionality
-        const uploadBtn = document.getElementById('uploadFileBtn');
-        const emptyStateUploadBtn = document.getElementById('emptyStateUploadBtn');
-        const uploadModal = document.getElementById('uploadModal');
-        const closeUploadBtn = document.getElementById('closeUploadModal');
-        const cancelUploadBtn = document.getElementById('cancelUploadBtn');
-        const browseFilesBtn = document.getElementById('browseFilesBtn');
-        let fileInput = document.getElementById('fileInput');
-        const uploadArea = document.getElementById('uploadArea');
-        const uploadQueue = document.getElementById('uploadQueue');
-        const startUploadBtn = document.getElementById('startUploadBtn');
-        
-        // Create file input if it doesn't exist or is hidden
-        if (!fileInput || fileInput.style.display === 'none') {
-            const existingInput = document.getElementById('fileInput');
-            if (existingInput) existingInput.remove();
-            
-            fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.id = 'fileInput';
-            fileInput.multiple = true;
-            fileInput.style.cssText = 'position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;';
-            document.body.appendChild(fileInput);
-            console.log('Created new file input element');
-        }
-        
-        const openModal = () => {
-            console.log('Opening upload modal');
-            if (uploadModal) {
-                uploadModal.classList.remove('hidden');
-                uploadModal.classList.add('flex');
-                if (uploadQueue) uploadQueue.innerHTML = '';
-                if (startUploadBtn) startUploadBtn.disabled = true;
-                this.selectedFiles = [];
-            }
-        };
-        
-        if (uploadBtn) uploadBtn.addEventListener('click', openModal);
-        if (emptyStateUploadBtn) emptyStateUploadBtn.addEventListener('click', openModal);
-        
-        const closeModal = () => {
-            if (uploadModal) {
-                uploadModal.classList.add('hidden');
-                uploadModal.classList.remove('flex');
-            }
-            this.selectedFiles = [];
-        };
-        
-        if (closeUploadBtn) closeUploadBtn.addEventListener('click', closeModal);
-        if (cancelUploadBtn) cancelUploadBtn.addEventListener('click', closeModal);
-        
+    }
+    
+    if (listViewBtn) {
+        listViewBtn.addEventListener('click', () => {
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+            this.viewMode = 'list';
+            this.render();
+        });
+    }
+    
+    // Search
+    const searchInput = document.getElementById('searchFiles');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            this.searchTerm = e.target.value;
+            this.render();
+        });
+    }
+    
+    // Sort
+    const sortSelect = document.getElementById('sortFiles');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+            this.sortBy = e.target.value;
+            this.render();
+        });
+    }
+    
+    // Quick access tags
+    document.querySelectorAll('.tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            const filter = tag.dataset.filter;
+            this.searchTerm = filter;
+            const searchEl = document.getElementById('searchFiles');
+            if (searchEl) searchEl.value = filter;
+            this.render();
+        });
+    });
+    
+    // Get DOM elements
+    const uploadBtn = document.getElementById('uploadFileBtn');
+    const emptyStateUploadBtn = document.getElementById('emptyStateUploadBtn');
+    const uploadModal = document.getElementById('uploadModal');
+    const closeUploadBtn = document.getElementById('closeUploadModal');
+    const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+    const browseFilesBtn = document.getElementById('browseFilesBtn');
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const uploadQueue = document.getElementById('uploadQueue');
+    const startUploadBtn = document.getElementById('startUploadBtn');
+    
+    // Open modal
+    const openModal = () => {
+        console.log('Opening upload modal');
         if (uploadModal) {
-            uploadModal.addEventListener('click', (e) => {
-                if (e.target === uploadModal) closeModal();
-            });
+            uploadModal.classList.remove('hidden');
+            uploadModal.classList.add('flex');
+            if (uploadQueue) uploadQueue.innerHTML = '';
+            if (startUploadBtn) startUploadBtn.disabled = true;
+            this.selectedFiles = [];
+        }
+    };
+    
+    if (uploadBtn) uploadBtn.addEventListener('click', openModal);
+    if (emptyStateUploadBtn) emptyStateUploadBtn.addEventListener('click', openModal);
+    
+    // Close modal
+    const closeModal = () => {
+        if (uploadModal) {
+            uploadModal.classList.add('hidden');
+            uploadModal.classList.remove('flex');
+        }
+        this.selectedFiles = [];
+        if (fileInput) fileInput.value = '';
+    };
+    
+    if (closeUploadBtn) closeUploadBtn.addEventListener('click', closeModal);
+    if (cancelUploadBtn) cancelUploadBtn.addEventListener('click', closeModal);
+    
+    if (uploadModal) {
+        uploadModal.addEventListener('click', (e) => {
+            if (e.target === uploadModal) closeModal();
+        });
+    }
+    
+    // Handle selected files
+    const handleFiles = (files) => {
+        if (!files || files.length === 0) {
+            console.log('No files selected');
+            return;
         }
         
-        const handleFiles = (files) => {
-            if (!files || files.length === 0) return;
+        console.log('Files selected:', files.length);
+        
+        const fileArray = Array.from(files);
+        this.selectedFiles = fileArray;
+        
+        console.log('Selected files stored:', this.selectedFiles.length);
+        
+        if (uploadQueue) {
+            uploadQueue.innerHTML = '';
             
-            console.log('Files selected:', files.length);
-            this.selectedFiles = files;
-            if (uploadQueue) uploadQueue.innerHTML = '';
-            
-            Array.from(files).forEach(file => {
+            fileArray.forEach(file => {
                 const item = document.createElement('div');
                 item.className = 'flex items-center justify-between p-2 bg-amber-600/10 rounded-lg';
                 item.innerHTML = `
@@ -1176,258 +1175,282 @@ class FileManager {
                 `;
                 uploadQueue.appendChild(item);
             });
-            
-            if (startUploadBtn) startUploadBtn.disabled = false;
-        };
-        
-        // Browse button handler
-        if (browseFilesBtn) {
-            const newBrowseBtn = browseFilesBtn.cloneNode(true);
-            browseFilesBtn.parentNode.replaceChild(newBrowseBtn, browseFilesBtn);
-            
-            newBrowseBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Browse button clicked');
-                const input = document.getElementById('fileInput');
-                if (input) {
-                    input.click();
-                }
-            });
         }
         
-        // File input handler
-        const currentFileInput = document.getElementById('fileInput');
-        if (currentFileInput) {
-            currentFileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-                currentFileInput.value = '';
-            });
-        }
-        
-        // Upload area handlers
-        if (uploadArea) {
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-            
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-            
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                uploadArea.classList.remove('dragover');
-                handleFiles(e.dataTransfer.files);
-            });
-            
-            uploadArea.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const input = document.getElementById('fileInput');
-                if (input) input.click();
-            });
-        }
-        
-        // Start upload button
         if (startUploadBtn) {
-            startUploadBtn.addEventListener('click', async () => {
-                if (this.selectedFiles.length === 0) return;
+            startUploadBtn.disabled = false;
+            console.log('Upload button enabled');
+        }
+    };
+    
+    // Browse button - SIMPLE: just add click listener
+    if (browseFilesBtn && fileInput) {
+        browseFilesBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Browse button clicked - opening file dialog');
+            fileInput.click();
+        });
+    }
+    
+    // File input change
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            console.log('File input changed event fired');
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                console.log('Files found in input:', files.length);
+                handleFiles(files);
+            } else {
+                console.log('No files in input');
+            }
+            // Reset the input so the same file can be selected again
+            fileInput.value = '';
+        });
+    }
+    
+    // Upload area - drag and drop only (no click handler)
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                console.log('Files dropped:', files.length);
+                handleFiles(files);
+            }
+        });
+    }
+    
+    // Start upload button
+    if (startUploadBtn) {
+        startUploadBtn.addEventListener('click', async () => {
+            console.log('Start upload clicked');
+            console.log('Selected files count:', this.selectedFiles ? this.selectedFiles.length : 0);
+            
+            if (!this.selectedFiles || this.selectedFiles.length === 0) {
+                console.log('No files selected, showing error');
+                this.showToast('No files selected. Please browse or drag files first.', 'warning');
+                return;
+            }
+            
+            console.log('Starting upload of', this.selectedFiles.length, 'files');
+            
+            startUploadBtn.disabled = true;
+            const originalText = startUploadBtn.innerHTML;
+            startUploadBtn.innerHTML = '<div class="loading-spinner"></div> Uploading...';
+            
+            try {
                 await this.uploadFiles(this.selectedFiles);
                 closeModal();
-            });
-        }
-        
-        // New folder button
-        const newFolderBtn = document.getElementById('newFolderBtn');
-        const folderModal = document.getElementById('newFolderModal');
-        const closeFolderBtn = document.getElementById('closeFolderModal');
-        const cancelFolderBtn = document.getElementById('cancelFolderBtn');
-        const createFolderBtn = document.getElementById('createFolderBtn');
-        const folderNameInput = document.getElementById('folderName');
-        
-        if (newFolderBtn) {
-            newFolderBtn.addEventListener('click', () => {
-                if (folderNameInput) folderNameInput.value = '';
-                if (folderModal) {
-                    folderModal.classList.remove('hidden');
-                    folderModal.classList.add('flex');
-                }
-            });
-        }
-        
-        const closeFolderModal = () => {
-            if (folderModal) {
-                folderModal.classList.add('hidden');
-                folderModal.classList.remove('flex');
+            } catch (error) {
+                console.error('Upload error:', error);
+                this.showToast('Upload failed: ' + error.message, 'error');
+            } finally {
+                startUploadBtn.disabled = false;
+                startUploadBtn.innerHTML = originalText;
             }
-        };
-        
-        if (closeFolderBtn) closeFolderBtn.addEventListener('click', closeFolderModal);
-        if (cancelFolderBtn) cancelFolderBtn.addEventListener('click', closeFolderModal);
-        
+        });
+    }
+    
+    // New folder button
+    const newFolderBtn = document.getElementById('newFolderBtn');
+    const folderModal = document.getElementById('newFolderModal');
+    const closeFolderBtn = document.getElementById('closeFolderModal');
+    const cancelFolderBtn = document.getElementById('cancelFolderBtn');
+    const createFolderBtn = document.getElementById('createFolderBtn');
+    const folderNameInput = document.getElementById('folderName');
+    
+    if (newFolderBtn) {
+        newFolderBtn.addEventListener('click', () => {
+            if (folderNameInput) folderNameInput.value = '';
+            if (folderModal) {
+                folderModal.classList.remove('hidden');
+                folderModal.classList.add('flex');
+            }
+        });
+    }
+    
+    const closeFolderModal = () => {
         if (folderModal) {
-            folderModal.addEventListener('click', (e) => {
-                if (e.target === folderModal) closeFolderModal();
-            });
+            folderModal.classList.add('hidden');
+            folderModal.classList.remove('flex');
         }
-        
-        if (createFolderBtn) {
-            createFolderBtn.addEventListener('click', async () => {
-                const name = folderNameInput?.value.trim();
-                if (name) {
-                    await this.createFolder(name);
-                    closeFolderModal();
+    };
+    
+    if (closeFolderBtn) closeFolderBtn.addEventListener('click', closeFolderModal);
+    if (cancelFolderBtn) cancelFolderBtn.addEventListener('click', closeFolderModal);
+    
+    if (folderModal) {
+        folderModal.addEventListener('click', (e) => {
+            if (e.target === folderModal) closeFolderModal();
+        });
+    }
+    
+    if (createFolderBtn) {
+        createFolderBtn.addEventListener('click', async () => {
+            const name = folderNameInput?.value.trim();
+            if (name) {
+                await this.createFolder(name);
+                closeFolderModal();
+            }
+        });
+    }
+    
+    // Preview modal
+    const closePreviewBtn = document.getElementById('closePreviewModal');
+    const downloadFromPreview = document.getElementById('downloadFromPreview');
+    const deleteFromPreview = document.getElementById('deleteFromPreview');
+    const previewModal = document.getElementById('previewModal');
+    
+    if (closePreviewBtn) {
+        closePreviewBtn.addEventListener('click', () => {
+            if (previewModal) {
+                previewModal.classList.add('hidden');
+                previewModal.classList.remove('flex');
+            }
+        });
+    }
+    
+    if (previewModal) {
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.classList.add('hidden');
+                previewModal.classList.remove('flex');
+            }
+        });
+    }
+    
+    if (downloadFromPreview) {
+        downloadFromPreview.addEventListener('click', async () => {
+            const fileId = previewModal?.dataset.fileId;
+            if (fileId) {
+                const file = this.files.find(f => f.id === fileId);
+                if (file) {
+                    const url = await this.getFileUrl(file);
+                    if (url) this.downloadFile(url, file.name);
                 }
-            });
-        }
-        
-        // Preview modal
-        const closePreviewBtn = document.getElementById('closePreviewModal');
-        const downloadFromPreview = document.getElementById('downloadFromPreview');
-        const deleteFromPreview = document.getElementById('deleteFromPreview');
-        const previewModal = document.getElementById('previewModal');
-        
-        if (closePreviewBtn) {
-            closePreviewBtn.addEventListener('click', () => {
+            }
+        });
+    }
+    
+    if (deleteFromPreview) {
+        deleteFromPreview.addEventListener('click', async () => {
+            const id = previewModal?.dataset.fileId;
+            if (id && confirm('Delete this file?')) {
+                await this.deleteFile(id);
                 if (previewModal) {
                     previewModal.classList.add('hidden');
                     previewModal.classList.remove('flex');
                 }
-            });
-        }
-        
-        if (previewModal) {
-            previewModal.addEventListener('click', (e) => {
-                if (e.target === previewModal) {
-                    previewModal.classList.add('hidden');
-                    previewModal.classList.remove('flex');
-                }
-            });
-        }
-        
-        if (downloadFromPreview) {
-            downloadFromPreview.addEventListener('click', async () => {
-                const fileId = previewModal?.dataset.fileId;
-                if (fileId) {
-                    const file = this.files.find(f => f.id === fileId);
-                    if (file) {
-                        const url = await this.getFileUrl(file);
-                        if (url) this.downloadFile(url, file.name);
-                    }
-                }
-            });
-        }
-        
-        if (deleteFromPreview) {
-            deleteFromPreview.addEventListener('click', async () => {
-                const id = previewModal?.dataset.fileId;
-                if (id && confirm('Delete this file?')) {
-                    await this.deleteFile(id);
-                    if (previewModal) {
-                        previewModal.classList.add('hidden');
-                        previewModal.classList.remove('flex');
-                    }
-                }
-            });
-        }
-        
-        // Info modal
-        const closeInfoBtn = document.getElementById('closeInfoModal');
-        const infoModal = document.getElementById('fileInfoModal');
-        
-        if (closeInfoBtn) {
-            closeInfoBtn.addEventListener('click', () => {
-                if (infoModal) {
-                    infoModal.classList.add('hidden');
-                    infoModal.classList.remove('flex');
-                }
-            });
-        }
-        
-        if (infoModal) {
-            infoModal.addEventListener('click', (e) => {
-                if (e.target === infoModal) {
-                    infoModal.classList.add('hidden');
-                    infoModal.classList.remove('flex');
-                }
-            });
-        }
-        
-        // Rename modal
-        const closeRenameBtn = document.getElementById('closeRenameModal');
-        const cancelRenameBtn = document.getElementById('cancelRenameBtn');
-        const renameModal = document.getElementById('renameModal');
-        
-        const closeRenameModal = () => {
-            if (renameModal) {
-                renameModal.classList.add('hidden');
-                renameModal.classList.remove('flex');
             }
-        };
-        
-        if (closeRenameBtn) closeRenameBtn.addEventListener('click', closeRenameModal);
-        if (cancelRenameBtn) cancelRenameBtn.addEventListener('click', closeRenameModal);
-        
-        if (renameModal) {
-            renameModal.addEventListener('click', (e) => {
-                if (e.target === renameModal) closeRenameModal();
-            });
-        }
-        
-        // File/Folder click handlers
-        const filesContainer = document.getElementById('filesContainer');
-        if (filesContainer) {
-            filesContainer.addEventListener('click', async (e) => {
-                const previewBtn = e.target.closest('.file-preview');
-                if (previewBtn) {
-                    e.stopPropagation();
-                    const id = previewBtn.dataset.id;
-                    await this.showFilePreview(id);
-                    return;
-                }
-                
-                const card = e.target.closest('[data-id]');
-                if (card && !e.target.closest('.item-options')) {
-                    const id = card.dataset.id;
-                    const type = card.dataset.type;
-                    const name = card.dataset.name;
-                    
-                    if (type === 'folder') {
-                        await this.navigateToFolder(id, name);
-                    } else if (type === 'file') {
-                        await this.showFilePreview(id);
-                    }
-                }
-            });
-            
-            filesContainer.addEventListener('contextmenu', (e) => {
-                const card = e.target.closest('[data-id]');
-                if (card) {
-                    e.preventDefault();
-                    const id = card.dataset.id;
-                    const type = card.dataset.type;
-                    const name = card.dataset.name;
-                    this.showContextMenu(e, id, type, name);
-                }
-            });
-            
-            filesContainer.addEventListener('click', (e) => {
-                const optionsBtn = e.target.closest('.item-options');
-                if (optionsBtn) {
-                    e.stopPropagation();
-                    const id = optionsBtn.dataset.id;
-                    const type = optionsBtn.dataset.type;
-                    const name = optionsBtn.dataset.name;
-                    this.showContextMenu(e, id, type, name);
-                }
-            });
-        }
-        
-        console.log('Event listeners setup complete');
+        });
     }
+    
+    // Info modal
+    const closeInfoBtn = document.getElementById('closeInfoModal');
+    const infoModal = document.getElementById('fileInfoModal');
+    
+    if (closeInfoBtn) {
+        closeInfoBtn.addEventListener('click', () => {
+            if (infoModal) {
+                infoModal.classList.add('hidden');
+                infoModal.classList.remove('flex');
+            }
+        });
+    }
+    
+    if (infoModal) {
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                infoModal.classList.add('hidden');
+                infoModal.classList.remove('flex');
+            }
+        });
+    }
+    
+    // Rename modal
+    const closeRenameBtn = document.getElementById('closeRenameModal');
+    const cancelRenameBtn = document.getElementById('cancelRenameBtn');
+    const renameModal = document.getElementById('renameModal');
+    
+    const closeRenameModal = () => {
+        if (renameModal) {
+            renameModal.classList.add('hidden');
+            renameModal.classList.remove('flex');
+        }
+    };
+    
+    if (closeRenameBtn) closeRenameBtn.addEventListener('click', closeRenameModal);
+    if (cancelRenameBtn) cancelRenameBtn.addEventListener('click', closeRenameModal);
+    
+    if (renameModal) {
+        renameModal.addEventListener('click', (e) => {
+            if (e.target === renameModal) closeRenameModal();
+        });
+    }
+    
+    // File/Folder click handlers
+    const filesContainer = document.getElementById('filesContainer');
+    if (filesContainer) {
+        filesContainer.addEventListener('click', async (e) => {
+            const previewBtn = e.target.closest('.file-preview');
+            if (previewBtn) {
+                e.stopPropagation();
+                const id = previewBtn.dataset.id;
+                await this.showFilePreview(id);
+                return;
+            }
+            
+            const card = e.target.closest('[data-id]');
+            if (card && !e.target.closest('.item-options')) {
+                const id = card.dataset.id;
+                const type = card.dataset.type;
+                const name = card.dataset.name;
+                
+                if (type === 'folder') {
+                    await this.navigateToFolder(id, name);
+                } else if (type === 'file') {
+                    await this.showFilePreview(id);
+                }
+            }
+        });
+        
+        filesContainer.addEventListener('contextmenu', (e) => {
+            const card = e.target.closest('[data-id]');
+            if (card) {
+                e.preventDefault();
+                const id = card.dataset.id;
+                const type = card.dataset.type;
+                const name = card.dataset.name;
+                this.showContextMenu(e, id, type, name);
+            }
+        });
+        
+        filesContainer.addEventListener('click', (e) => {
+            const optionsBtn = e.target.closest('.item-options');
+            if (optionsBtn) {
+                e.stopPropagation();
+                const id = optionsBtn.dataset.id;
+                const type = optionsBtn.dataset.type;
+                const name = optionsBtn.dataset.name;
+                this.showContextMenu(e, id, type, name);
+            }
+        });
+    }
+    
+    console.log('Event listeners setup complete');
+}
 }
 
 // Initialize file manager when DOM is ready

@@ -588,7 +588,6 @@
                     <i class="fas fa-cloud-upload-alt text-4xl text-amber-400 mb-3"></i>
                     <p class="text-amber-100 font-medium mb-1">Drag and drop files here</p>
                     <p class="text-amber-200/50 text-sm mb-3">or click to browse</p>
-                    <input type="file" id="fileInput" multiple style="display: none !important;">
                     <button id="browseFilesBtn" class="px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg transition-colors text-sm">
                         Browse Files
                     </button>
@@ -784,5 +783,11 @@
         
         loadUserInfo()
     </script>
+        <!-- Hidden File Input -->
+    <input type="file" id="fileInput" multiple style="display: none !important;">
+
+    <!-- Scripts -->
+    <script type="module" src="supabase.js"></script>
+    <script type="module" src="files.js"></script>
 </body>
 </html>

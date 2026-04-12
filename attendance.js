@@ -13,72 +13,98 @@ class AttendanceManager {
         
     }
 
-    // Load students from Supabase
-    async loadStudentsFromSupabase() {
-        try {
-            console.log('Loading students from Supabase...');
-            
-            // Get current user
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            if (!user) {
-                console.log('No user logged in');
-                return [];
-            }
-            
-            // Fetch students for this user
-            const { data, error } = await supabase
-                .from('students')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('name');
-            
-            if (error) {
-                console.error('Error loading students:', error);
-                return [];
-            }
-            
-            console.log(`Loaded ${data?.length || 0} students from Supabase`);
-            return data || [];
-        } catch (error) {
-            console.error('Exception loading students:', error);
+ // Load students from Supabase
+async loadStudentsFromSupabase() {
+    try {
+        console.log('Loading students from Supabase...');
+        
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            console.log('No user logged in');
             return [];
         }
+        
+        // Get current show ID
+        const currentShowId = localStorage.getItem('currentShowId');
+        if (!currentShowId) {
+            console.log('No show selected');
+            return [];
+        }
+        
+        // Fetch students for this user AND current show
+        const { data, error } = await supabase
+            .from('students')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('show_id', currentShowId)  // ← IMPORTANT: Filter by show_id
+            .order('name');
+        
+        if (error) {
+            console.error('Error loading students:', error);
+            return [];
+        }
+        
+        console.log(`Loaded ${data?.length || 0} students from Supabase for show ${currentShowId}`);
+        return data || [];
+    } catch (error) {
+        console.error('Exception loading students:', error);
+        return [];
     }
+}
 
-    // Load attendance for a specific date
-    async loadAttendanceFromSupabase(date) {
-        try {
-            console.log(`Loading attendance for ${date}...`);
-            
-            const { data, error } = await supabase
-                .from('attendance')
-                .select('*')
-                .eq('date', date);
-            
-            if (error) {
-                console.error('Error loading attendance:', error);
-                return {};
-            }
-            
-            // Convert to the format expected by the app
-            const attendanceByStudent = {};
-            data?.forEach(record => {
-                attendanceByStudent[record.student_id] = {
-                    status: record.status,
-                    notes: record.notes || ''
-                };
-            });
-            
-            console.log(`Loaded ${data?.length || 0} attendance records`);
-            return attendanceByStudent;
-        } catch (error) {
-            console.error('Exception loading attendance:', error);
+   // Load attendance for a specific date
+async loadAttendanceFromSupabase(date) {
+    try {
+        console.log(`Loading attendance for ${date}...`);
+        
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return {};
+        
+        // Get current show ID
+        const currentShowId = localStorage.getItem('currentShowId');
+        if (!currentShowId) {
+            console.log('No show selected');
             return {};
         }
+        
+        // Join with students table to filter by show_id
+        const { data, error } = await supabase
+            .from('attendance')
+            .select(`
+                *,
+                students!inner (
+                    show_id
+                )
+            `)
+            .eq('date', date)
+            .eq('students.show_id', currentShowId);
+        
+        if (error) {
+            console.error('Error loading attendance:', error);
+            return {};
+        }
+        
+        // Convert to the format expected by the app
+        const attendanceByStudent = {};
+        data?.forEach(record => {
+            attendanceByStudent[record.student_id] = {
+                status: record.status,
+                notes: record.notes || ''
+            };
+        });
+        
+        console.log(`Loaded ${data?.length || 0} attendance records for show ${currentShowId}`);
+        return attendanceByStudent;
+    } catch (error) {
+        console.error('Exception loading attendance:', error);
+        return {};
     }
+}
 
-   // Save attendance records for a date
+// Save attendance records for a date
 async saveAttendanceToSupabase(date, attendanceData) {
     try {
         console.log(`Saving attendance for ${date}...`);
@@ -90,6 +116,13 @@ async saveAttendanceToSupabase(date, attendanceData) {
             return false;
         }
         
+        // Get current show ID
+        const currentShowId = localStorage.getItem('currentShowId');
+        if (!currentShowId) {
+            console.error('No show selected');
+            return false;
+        }
+        
         // Prepare records for upsert
         const records = [];
         for (const [studentId, data] of Object.entries(attendanceData)) {
@@ -98,7 +131,8 @@ async saveAttendanceToSupabase(date, attendanceData) {
                 date: date,
                 status: data.status,
                 notes: data.notes || '',
-                user_id: user.id
+                user_id: user.id,
+                show_id: parseInt(currentShowId)  // ← ADD THIS LINE
             });
         }
         
@@ -108,12 +142,11 @@ async saveAttendanceToSupabase(date, attendanceData) {
         }
         
         // Use upsert instead of delete+insert
-        // This will update existing records or insert new ones
         const { error } = await supabase
             .from('attendance')
             .upsert(records, {
-                onConflict: 'student_id, date', // Specify the conflict columns
-                ignoreDuplicates: false // Set to true if you want to ignore conflicts
+                onConflict: 'student_id, date',
+                ignoreDuplicates: false
             });
         
         if (error) {
@@ -121,7 +154,7 @@ async saveAttendanceToSupabase(date, attendanceData) {
             return false;
         }
         
-        console.log(`Saved ${records.length} attendance records`);
+        console.log(`Saved ${records.length} attendance records for show ${currentShowId}`);
         return true;
     } catch (error) {
         console.error('Exception saving attendance:', error);
