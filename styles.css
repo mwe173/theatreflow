@@ -1861,3 +1861,623 @@ body.light-mode .event-list-item .text-xs {
 body.light-mode .event-list-item .rounded-full {
     color: #1e3a8a !important;
 }
+
+/* Add to your styles.css or in a <style> tag in scenes.html */
+
+/* ===== SCENES PAGE BUBBLE STYLES - DARK & LIGHT MODE ===== */
+
+/* Base bubble tag styles */
+.bubble-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.bubble-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Character Bubbles - Dark Mode */
+.bubble-tag.character {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    border: 1px solid rgba(139, 92, 246, 0.5);
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-tag.character i {
+    color: #c4b5fd;
+}
+
+.bubble-tag.character:hover {
+    background: linear-gradient(135deg, #9b6ef7 0%, #8b5cf6 100%);
+    border-color: rgba(167, 139, 250, 0.7);
+}
+
+/* Character Bubbles - Light Mode */
+body.light-mode .bubble-tag.character {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: white;
+}
+
+body.light-mode .bubble-tag.character i {
+    color: #ddd6fe;
+}
+
+body.light-mode .bubble-tag.character:hover {
+    background: linear-gradient(135deg, #b49cfb 0%, #9b6ef7 100%);
+}
+
+/* Song Bubbles - Dark Mode */
+.bubble-tag.song {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    border: 1px solid rgba(236, 72, 153, 0.5);
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-tag.song i {
+    color: #fbcfe8;
+}
+
+.bubble-tag.song:hover {
+    background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+    border-color: rgba(251, 207, 232, 0.5);
+}
+
+/* Song Bubbles - Light Mode */
+body.light-mode .bubble-tag.song {
+    background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+    border: 1px solid rgba(236, 72, 153, 0.3);
+    color: white;
+}
+
+body.light-mode .bubble-tag.song i {
+    color: #fce7f3;
+}
+
+body.light-mode .bubble-tag.song:hover {
+    background: linear-gradient(135deg, #f589c4 0%, #f472b6 100%);
+}
+
+/* Prop Bubbles - Dark Mode */
+.bubble-tag.prop {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-tag.prop i {
+    color: #a7f3d0;
+}
+
+.bubble-tag.prop:hover {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border-color: rgba(167, 243, 208, 0.5);
+}
+
+/* Prop Bubbles - Light Mode */
+body.light-mode .bubble-tag.prop {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+body.light-mode .bubble-tag.prop i {
+    color: #d1fae5;
+}
+
+body.light-mode .bubble-tag.prop:hover {
+    background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+}
+
+/* Bubble section titles */
+.bubble-section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Dark mode section titles */
+.bubble-section-title {
+    color: #cbd5e1;
+}
+
+.bubble-section-title i {
+    color: #fbbf24;
+}
+
+/* Light mode section titles */
+body.light-mode .bubble-section-title {
+    color: #475569;
+}
+
+body.light-mode .bubble-section-title i {
+    color: #b45309;
+}
+
+/* Bubble stack container */
+.bubble-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.5rem 0 0.75rem 0;
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+}
+
+/* Dark mode bubble stack background */
+.bubble-stack {
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid rgba(180, 83, 9, 0.15);
+}
+
+/* Light mode bubble stack background */
+body.light-mode .bubble-stack {
+    background: rgba(241, 245, 249, 0.5);
+    border: 1px solid rgba(180, 83, 9, 0.2);
+}
+
+/* Input fields inside bubbles */
+.bubble-tag input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0;
+    margin: 0;
+    width: auto;
+}
+
+.bubble-tag input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: normal;
+}
+
+.bubble-tag .song-name {
+    min-width: 80px;
+    max-width: 150px;
+}
+
+.bubble-tag .song-notes {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    max-width: 120px;
+}
+
+.bubble-tag .prop-quantity {
+    width: 45px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.375rem;
+    padding: 0.125rem 0.25rem;
+}
+
+/* Light mode input styling */
+body.light-mode .bubble-tag input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body.light-mode .bubble-tag .prop-quantity {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Remove buttons inside bubbles */
+.bubble-tag button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s;
+    padding: 0;
+    margin-left: 0.25rem;
+}
+
+.bubble-tag button:hover {
+    color: #fca5a5;
+}
+
+/* Light mode remove button */
+body.light-mode .bubble-tag button {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Character popup tooltip */
+.character-popup {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.5rem;
+    width: 280px;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.bubble-tag.character:hover .character-popup {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Dark mode popup */
+.character-popup > div {
+    background: #1e293b;
+    border: 1px solid #b45309;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode popup */
+body.light-mode .character-popup > div {
+    background: #ffffff;
+    border: 1px solid #b45309;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== SCENE CARD STYLES ===== */
+
+/* Dark mode scene cards */
+.scene-card {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(180, 83, 9, 0.2);
+    transition: all 0.2s ease;
+}
+
+.scene-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(180, 83, 9, 0.5);
+    box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode scene cards */
+body.light-mode .scene-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(180, 83, 9, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .scene-card:hover {
+    border-color: rgba(180, 83, 9, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Scene number badge */
+.scene-number {
+    background: linear-gradient(135deg, #b45309, #d97706);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode scene number */
+body.light-mode .scene-number {
+    background: linear-gradient(135deg, #b45309, #d97706);
+    color: white;
+}
+
+/* Scene titles */
+.scene-card h3 {
+    color: #fef3c7;
+}
+
+body.light-mode .scene-card h3 {
+    color: #1e293b;
+}
+
+/* Scene setting text */
+.scene-card .text-amber-200\/50 {
+    color: #94a3b8;
+}
+
+body.light-mode .scene-card .text-amber-200\/50 {
+    color: #64748b;
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 4px;
+    background: rgba(180, 83, 9, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 80px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #b45309, #f59e0b);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* Light mode progress bar */
+body.light-mode .progress-bar {
+    background: rgba(180, 83, 9, 0.15);
+}
+
+/* ===== SELECTION MODAL STYLES ===== */
+
+/* Dark mode modal items */
+.selection-modal-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.selection-modal-item:hover {
+    background: rgba(180, 83, 9, 0.1);
+    border-color: rgba(180, 83, 9, 0.3);
+}
+
+.selection-modal-item.selected {
+    background: rgba(180, 83, 9, 0.15);
+    border-color: #b45309;
+}
+
+/* Light mode modal items */
+body.light-mode .selection-modal-item:hover {
+    background: rgba(180, 83, 9, 0.05);
+}
+
+body.light-mode .selection-modal-item.selected {
+    background: rgba(180, 83, 9, 0.1);
+}
+
+/* Modal checkbox styling */
+.selection-modal-item input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    accent-color: #b45309;
+}
+
+/* ===== CHECKLIST STYLES ===== */
+
+/* Dark mode checklist */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(180, 83, 9, 0.15);
+}
+
+.checklist-item input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    accent-color: #b45309;
+}
+
+.checklist-item .task-text {
+    flex: 1;
+    color: #e2e8f0;
+}
+
+.checklist-item.completed .task-text {
+    text-decoration: line-through;
+    color: #64748b;
+}
+
+/* Light mode checklist */
+body.light-mode .checklist-item {
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid rgba(180, 83, 9, 0.1);
+}
+
+body.light-mode .checklist-item .task-text {
+    color: #334155;
+}
+
+body.light-mode .checklist-item.completed .task-text {
+    color: #94a3b8;
+}
+
+/* ===== STAT CHIPS ===== */
+
+/* Dark mode stat chips */
+.stat-chip {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(4px);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border: 1px solid rgba(180, 83, 9, 0.2);
+}
+
+.stat-chip .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fbbf24;
+}
+
+.stat-chip .text-xs {
+    color: #94a3b8;
+}
+
+/* Light mode stat chips */
+body.light-mode .stat-chip {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(180, 83, 9, 0.15);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .stat-chip .number {
+    color: #b45309;
+}
+
+body.light-mode .stat-chip .text-xs {
+    color: #64748b;
+}
+
+/* ===== DRAG HANDLE ===== */
+.drag-handle {
+    cursor: grab;
+    color: rgba(245, 158, 11, 0.4);
+    transition: color 0.2s;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.drag-handle:hover {
+    color: #fbbf24;
+}
+
+body.light-mode .drag-handle {
+    color: rgba(180, 83, 9, 0.4);
+}
+
+body.light-mode .drag-handle:hover {
+    color: #b45309;
+}
+
+/* ===== SEARCH AND FILTER INPUTS ===== */
+
+/* Dark mode */
+#searchScenes, #characterFilter {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(180, 83, 9, 0.2);
+    color: #f1f5f9;
+}
+
+#searchScenes:focus, #characterFilter:focus {
+    outline: none;
+    border-color: #b45309;
+    box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+}
+
+#searchScenes::placeholder {
+    color: #64748b;
+}
+
+/* Light mode */
+body.light-mode #searchScenes,
+body.light-mode #characterFilter {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(180, 83, 9, 0.2);
+    color: #1e293b;
+}
+
+body.light-mode #searchScenes::placeholder {
+    color: #94a3b8;
+}
+
+/* ===== BUTTONS ===== */
+
+/* Dark mode buttons */
+.bg-amber-600 {
+    background: #b45309;
+}
+
+.bg-amber-600:hover {
+    background: #d97706;
+}
+
+.bg-amber-600\/20 {
+    background: rgba(180, 83, 9, 0.2);
+}
+
+.bg-amber-600\/20:hover {
+    background: rgba(180, 83, 9, 0.3);
+}
+
+/* Light mode buttons */
+body.light-mode .bg-amber-600 {
+    background: #b45309;
+}
+
+body.light-mode .bg-amber-600:hover {
+    background: #d97706;
+}
+
+body.light-mode .bg-amber-600\/20 {
+    background: rgba(180, 83, 9, 0.1);
+}
+
+body.light-mode .bg-amber-600\/20:hover {
+    background: rgba(180, 83, 9, 0.2);
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+    .bubble-stack {
+        gap: 0.5rem;
+    }
+    
+    .bubble-tag {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .bubble-tag .song-name {
+        max-width: 100px;
+    }
+    
+    .bubble-tag .song-notes {
+        max-width: 80px;
+        font-size: 0.65rem;
+    }
+    
+    .character-popup {
+        width: 220px;
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scene-card {
+    animation: fadeIn 0.3s ease;
+}
+
+.bubble-tag {
+    animation: fadeIn 0.2s ease;
+}
