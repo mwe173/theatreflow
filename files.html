@@ -419,23 +419,20 @@
                         </div>
                         <i class="fas fa-chevron-down text-amber-200/50 text-xs transition-transform" id="userMenuChevron"></i>
                     </div>
-                    <div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
-                        <div class="py-1">
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="accountSettingsBtn">
-                                <i class="fas fa-user-cog w-4 text-amber-400"></i>
-                                <span>Account Settings</span>
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors" id="profileBtn">
-                                <i class="fas fa-id-card w-4 text-amber-400"></i>
-                                <span>My Profile</span>
-                            </a>
-                            <div class="border-t border-gray-700 my-1"></div>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
-                                <i class="fas fa-sign-out-alt w-4"></i>
-                                <span>Logout</span>
-                            </a>
-                        </div>
-                    </div>
+                    <!-- Dropdown Menu (hidden by default) -->
+<div class="absolute bottom-full left-0 w-full mb-2 hidden bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden z-50" id="userDropdown">
+    <div class="py-1">
+        <a href="account.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-amber-600/20 hover:text-amber-100 transition-colors">
+            <i class="fas fa-user-cog w-4 text-amber-400"></i>
+            <span>Account Management</span>
+        </a>
+        <div class="border-t border-gray-700 my-1"></div>
+        <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-600/20 transition-colors" id="logoutBtn">
+            <i class="fas fa-sign-out-alt w-4"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>
                 </div>
             </div>
         </aside>
